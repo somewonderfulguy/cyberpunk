@@ -6,12 +6,7 @@ import classNames from '@repo/shared/utils/classNames'
 
 import {
   useGetRatesCoingecko,
-  useGetBlastBalance,
   useGetEtherBalance,
-  useGetScrollBalance,
-  useGetOptimismBalance,
-  useGetBaseBalance,
-  useGetZoraBalance,
   useGetBtcBalance,
   useGetTonBalance,
   useGetSolBalance,
@@ -19,12 +14,9 @@ import {
 } from '../apiClient/balance'
 import { formatFiat } from '../utils'
 
-import styles from './Crypto.module.css'
+import { btcWallet, ethWallet, solWallet, tonWallet } from './wallets'
 
-const btcWallet = ''
-const ethWallet = ''
-const solWallet = ''
-const tonWallet = ''
+import styles from './Crypto.module.css'
 
 const tonWeb = tonWallet ? new TonWeb.utils.Address(tonWallet) : null
 const hashPartHex = (tonWeb ? Array.from(tonWeb.hashPart) : null)
@@ -32,21 +24,21 @@ const hashPartHex = (tonWeb ? Array.from(tonWeb.hashPart) : null)
   .join('')
 const tonRawHexAddress = `${tonWeb?.wc}:${hashPartHex}`
 
-const getEth = (wei: string) => {
-  const ethBalance = parseInt(wei) / 1e18
-  return {
-    ethFull: ethBalance,
-    ethShort: ethBalance.toFixed(4)
-  }
-}
+// const getEth = (wei: string) => {
+//   const ethBalance = parseInt(wei) / 1e18
+//   return {
+//     ethFull: ethBalance,
+//     ethShort: ethBalance.toFixed(4)
+//   }
+// }
 
-const getEthInUst = (eth: number, rate: number) => {
-  const ustBalance = eth * rate
-  return {
-    ustFull: ustBalance,
-    ustShort: formatFiat(ustBalance, 'usd')
-  }
-}
+// const getEthInUst = (eth: number, rate: number) => {
+//   const ustBalance = eth * rate
+//   return {
+//     ustFull: ustBalance,
+//     ustShort: formatFiat(ustBalance, 'usd')
+//   }
+// }
 
 const getSumEth = (balancesWei: string[], rate: number) => {
   const sumWei = balancesWei.reduce((acc, wei) => acc + parseInt(wei), 0)
@@ -61,36 +53,31 @@ const getSumEth = (balancesWei: string[], rate: number) => {
   }
 }
 
-type Props = {
-  label: string
-  balanceWei: string
-}
+// type Props = {
+//   label: string
+//   balanceWei: string
+// }
 
-const EthEntry = ({ balanceWei, label }: Props) => {
-  const { data: rates, isLoading } = useGetRatesCoingecko()
-  const { ethFull, ethShort } = getEth(balanceWei)
-  const { ustFull, ustShort } = getEthInUst(ethFull, rates?.ethereum.usd ?? NaN)
-  return (
-    <div>
-      <h3 className={classNames(styles.h3, styles.headerSpace)}>{label}</h3>
-      <div>
-        <div title={String(ethFull)}>{ethShort} ETH</div>
-        <div title={String(ustFull)}>{isLoading ? 'Loading...' : ustShort}</div>
-      </div>
-    </div>
-  )
-}
+// const EthEntry = ({ balanceWei, label }: Props) => {
+//   const { data: rates, isLoading } = useGetRatesCoingecko()
+//   const { ethFull, ethShort } = getEth(balanceWei)
+//   const { ustFull, ustShort } = getEthInUst(ethFull, rates?.ethereum.usd ?? NaN)
+//   return (
+//     <div>
+//       <h3 className={classNames(styles.h3, styles.headerSpace)}>{label}</h3>
+//       <div>
+//         <div title={String(ethFull)}>{ethShort} ETH</div>
+//         <div title={String(ustFull)}>{isLoading ? 'Loading...' : ustShort}</div>
+//       </div>
+//     </div>
+//   )
+// }
 
 const initialData = { balance: 0, balanceShort: 0 }
 
 const CryptoApp = () => {
   const { data: rates } = useGetRatesCoingecko()
   const { data: etherBalance } = useGetEtherBalance(ethWallet)
-  const { data: blastBalance } = useGetBlastBalance(ethWallet)
-  const { data: scrollBalance } = useGetScrollBalance(ethWallet)
-  const { data: optimismBalance } = useGetOptimismBalance(ethWallet)
-  const { data: baseBalance } = useGetBaseBalance(ethWallet)
-  const { data: zoraBalance } = useGetZoraBalance(ethWallet)
   const { data: { balance: btc, balanceShort: btcShort } = initialData } = useGetBtcBalance(btcWallet)
   const { data: solBalance } = useGetSolBalance(solWallet)
   const { data: tonBalance } = useGetTonBalance(tonWallet)
@@ -115,17 +102,7 @@ const CryptoApp = () => {
   const btcRate = rates?.bitcoin.usd ?? NaN
   const btcUst = btc * btcRate
 
-  const sum = getSumEth(
-    [
-      etherBalance?.result ?? '0',
-      blastBalance?.result ?? '0',
-      scrollBalance?.result ?? '0',
-      optimismBalance?.result ?? '0',
-      baseBalance?.result ?? '0',
-      zoraBalance?.result ?? '0'
-    ],
-    rates?.ethereum.usd ?? NaN
-  )
+  const sum = getSumEth([etherBalance?.result ?? '0'], rates?.ethereum.usd ?? NaN)
 
   return (
     <div className={styles.wrapper}>
@@ -217,18 +194,6 @@ const CryptoApp = () => {
           </p>
           <div title={String(sum.ethFull)}>{sum.ethShort} ETH</div>
           <div title={String(sum.ustFull)}>{sum.ustShort}</div>
-          <div className={styles.balances}>
-            <div>
-              <EthEntry label="Mainnet" balanceWei={etherBalance?.result ?? '0'} />
-              <EthEntry label="Optimism" balanceWei={optimismBalance?.result ?? '0'} />
-              <EthEntry label="Zora" balanceWei={zoraBalance?.result ?? '0'} />
-            </div>
-            <div>
-              <EthEntry label="Blast" balanceWei={blastBalance?.result ?? '0'} />
-              <EthEntry label="Base" balanceWei={baseBalance?.result ?? '0'} />
-              <EthEntry label="Scroll" balanceWei={scrollBalance?.result ?? '0'} />
-            </div>
-          </div>
         </div>
 
         <div>
