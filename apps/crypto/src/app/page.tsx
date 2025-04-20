@@ -10,11 +10,13 @@ import {
   useGetBtcBalance,
   useGetTonBalance,
   useGetSolBalance,
-  useTonTokens
+  useTonTokens,
+  useGetUSDTBalance,
+  useGetMantleBalance
 } from '../apiClient/balance'
 import { formatFiat } from '../utils'
 
-import { btcWallet, ethWallet, solWallet, tonWallet } from './wallets'
+import { btcWallet, ethWallet1, ethWallet2, ethWallet3, solWallet, tonWallet } from './wallets'
 
 import styles from './Crypto.module.css'
 
@@ -23,22 +25,6 @@ const hashPartHex = (tonWeb ? Array.from(tonWeb.hashPart) : null)
   ?.map((byte) => byte.toString(16).padStart(2, '0')) // Convert each byte to a hex string and pad with zeros if necessary
   .join('')
 const tonRawHexAddress = `${tonWeb?.wc}:${hashPartHex}`
-
-// const getEth = (wei: string) => {
-//   const ethBalance = parseInt(wei) / 1e18
-//   return {
-//     ethFull: ethBalance,
-//     ethShort: ethBalance.toFixed(4)
-//   }
-// }
-
-// const getEthInUst = (eth: number, rate: number) => {
-//   const ustBalance = eth * rate
-//   return {
-//     ustFull: ustBalance,
-//     ustShort: formatFiat(ustBalance, 'usd')
-//   }
-// }
 
 const getSumEth = (balancesWei: string[], rate: number) => {
   const sumWei = balancesWei.reduce((acc, wei) => acc + parseInt(wei), 0)
@@ -53,35 +39,21 @@ const getSumEth = (balancesWei: string[], rate: number) => {
   }
 }
 
-// type Props = {
-//   label: string
-//   balanceWei: string
-// }
-
-// const EthEntry = ({ balanceWei, label }: Props) => {
-//   const { data: rates, isLoading } = useGetRatesCoingecko()
-//   const { ethFull, ethShort } = getEth(balanceWei)
-//   const { ustFull, ustShort } = getEthInUst(ethFull, rates?.ethereum.usd ?? NaN)
-//   return (
-//     <div>
-//       <h3 className={classNames(styles.h3, styles.headerSpace)}>{label}</h3>
-//       <div>
-//         <div title={String(ethFull)}>{ethShort} ETH</div>
-//         <div title={String(ustFull)}>{isLoading ? 'Loading...' : ustShort}</div>
-//       </div>
-//     </div>
-//   )
-// }
-
 const initialData = { balance: 0, balanceShort: 0 }
 
 const CryptoApp = () => {
   const { data: rates } = useGetRatesCoingecko()
-  const { data: etherBalance } = useGetEtherBalance(ethWallet)
+  const { data: etherBalance1 } = useGetEtherBalance(ethWallet1)
+  const { data: etherBalance2 } = useGetEtherBalance(ethWallet2)
+  const { data: etherBalance3 } = useGetEtherBalance(ethWallet3)
+  const { data: etherBalance1Usdt1 } = useGetUSDTBalance(ethWallet1)
+  const { data: etherBalance1Usdt2 } = useGetUSDTBalance(ethWallet2)
+  const { data: etherBalance1Usdt3 } = useGetUSDTBalance(ethWallet3)
   const { data: { balance: btc, balanceShort: btcShort } = initialData } = useGetBtcBalance(btcWallet)
   const { data: solBalance } = useGetSolBalance(solWallet)
   const { data: tonBalance } = useGetTonBalance(tonWallet)
   const { data: tonTokens } = useTonTokens(tonRawHexAddress)
+  const { data: mantleBalance } = useGetMantleBalance(ethWallet1)
 
   const notcoin = tonTokens?.balances.find((balance) => balance.jetton.name === 'Notcoin')
   const notcoinRawBalance = +(notcoin?.balance ?? 0)
@@ -100,16 +72,39 @@ const CryptoApp = () => {
   const solInUst = solInNative * (rates?.solana.usd ?? 1)
 
   const btcRate = rates?.bitcoin.usd ?? NaN
-  const btcUst = btc * btcRate
+  const btcUst = btc * btcRate || 0
 
-  const sum = getSumEth([etherBalance?.result ?? '0'], rates?.ethereum.usd ?? NaN)
+  const usdt1 = Number(etherBalance1Usdt1?.result) / 1e6 || 0
+  const usdt2 = Number(etherBalance1Usdt2?.result) / 1e6 || 0
+  const usdt3 = Number(etherBalance1Usdt3?.result) / 1e6 || 0
+
+  const mantle = +(mantleBalance?.result ?? 0) / 1e18
+  const mantleInUst = mantle * (rates?.mantle.usd ?? 1)
+
+  const sumEth1 = getSumEth([etherBalance1?.result ?? '0'], rates?.ethereum.usd ?? NaN)
+  const sumEth2 = getSumEth([etherBalance2?.result ?? '0'], rates?.ethereum.usd ?? NaN)
+  const sumEth3 = getSumEth([etherBalance3?.result ?? '0'], rates?.ethereum.usd ?? NaN)
+
+  const sum =
+    sumEth1.ustFull +
+    sumEth2.ustFull +
+    sumEth3.ustFull +
+    btcUst +
+    tonInUst +
+    notInUst +
+    solInUst +
+    tonUsdtBalance +
+    usdt1 +
+    usdt2 +
+    usdt3 +
+    mantleInUst
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.head}>
         <h1 className={styles.h1}>Crypto Balance</h1>
-        <p title={String(sum.ustFull + btcUst)} className={styles.overallBalance}>
-          {formatFiat(sum.ustFull + btcUst + tonInUst + solInUst + tonUsdtBalance, 'usd')}
+        <p title={String(sum)} className={styles.overallBalance}>
+          {formatFiat(sum, 'usd')}
         </p>
       </div>
 
@@ -166,34 +161,85 @@ const CryptoApp = () => {
           </p>
           <p style={{ marginBottom: 16 }}>
             Wallet:{' '}
-            <span title={ethWallet}>
+            <span title={ethWallet1}>
               {/* TODO: add copy */}
-              {ethWallet.slice(0, 7)}...{ethWallet.slice(-5)}
+              {ethWallet1.slice(0, 7)}...{ethWallet1.slice(-5)}
             </span>
           </p>
-          <div title={String(0)}>0 MNT</div>
-          <div title={String(0)}>{formatFiat(0, 'usd')}</div>
+          <div title={String(mantle)}>{mantle.toFixed(4)} MNT</div>
+          <div title={String(mantleInUst)}>{formatFiat(mantleInUst, 'usd')}</div>
         </div>
 
         <div>
-          <h2 className={classNames(styles.h2, styles.headerSpace)}>
-            Ethereum <span className={styles.titleNote}>ETH</span>
-          </h2>
-          <p className={styles.cryptoCurrencyPrice}>
-            Price:{' '}
-            {formatFiat(rates?.ethereum.usd ?? 0, 'usd', {
-              maximumSignificantDigits: 21
-            })}
-          </p>
-          <p style={{ marginBottom: 16 }}>
-            Wallet:{' '}
-            <span title={ethWallet}>
-              {/* TODO: add copy */}
-              {ethWallet.slice(0, 7)}...{ethWallet.slice(-5)}
-            </span>
-          </p>
-          <div title={String(sum.ethFull)}>{sum.ethShort} ETH</div>
-          <div title={String(sum.ustFull)}>{sum.ustShort}</div>
+          <div>
+            <h2 className={classNames(styles.h2, styles.headerSpace)}>
+              Ethereum <span className={styles.titleNote}>ETH</span>
+            </h2>
+            <p className={styles.cryptoCurrencyPrice}>
+              Price:{' '}
+              {formatFiat(rates?.ethereum.usd ?? 0, 'usd', {
+                maximumSignificantDigits: 21
+              })}
+            </p>
+            <p style={{ marginBottom: 16 }}>
+              Wallet:{' '}
+              <span title={ethWallet1}>
+                {/* TODO: add copy */}
+                {ethWallet1.slice(0, 7)}...{ethWallet1.slice(-5)}
+              </span>
+            </p>
+            <div title={String(sumEth1.ethFull)}>{sumEth1.ethShort} ETH</div>
+            <div title={String(sumEth1.ustFull)}>{sumEth1.ustShort}</div>
+
+            <h3 className={classNames(styles.h3, styles.headerSpace)}>USDT</h3>
+            <div title={String(usdt1)}>{formatFiat(usdt1, 'usd')}</div>
+          </div>
+          <div>
+            <h2 className={classNames(styles.h2, styles.headerSpace)}>
+              Ethereum <span className={styles.titleNote}>ETH</span>
+            </h2>
+            <p className={styles.cryptoCurrencyPrice}>
+              Price:{' '}
+              {formatFiat(rates?.ethereum.usd ?? 0, 'usd', {
+                maximumSignificantDigits: 21
+              })}
+            </p>
+            <p style={{ marginBottom: 16 }}>
+              Wallet:{' '}
+              <span title={ethWallet2}>
+                {/* TODO: add copy */}
+                {ethWallet2.slice(0, 7)}...{ethWallet2.slice(-5)}
+              </span>
+            </p>
+            <div title={String(sumEth2.ethFull)}>{sumEth2.ethShort} ETH</div>
+            <div title={String(sumEth2.ustFull)}>{sumEth2.ustShort}</div>
+
+            <h3 className={classNames(styles.h3, styles.headerSpace)}>USDT</h3>
+            <div title={String(usdt2)}>{formatFiat(usdt2, 'usd')}</div>
+          </div>
+          <div>
+            <h2 className={classNames(styles.h2, styles.headerSpace)}>
+              Ethereum <span className={styles.titleNote}>ETH</span>
+            </h2>
+            <p className={styles.cryptoCurrencyPrice}>
+              Price:{' '}
+              {formatFiat(rates?.ethereum.usd ?? 0, 'usd', {
+                maximumSignificantDigits: 21
+              })}
+            </p>
+            <p style={{ marginBottom: 16 }}>
+              Wallet:{' '}
+              <span title={ethWallet3}>
+                {/* TODO: add copy */}
+                {ethWallet3.slice(0, 7)}...{ethWallet3.slice(-5)}
+              </span>
+            </p>
+            <div title={String(sumEth3.ethFull)}>{sumEth3.ethShort} ETH</div>
+            <div title={String(sumEth3.ustFull)}>{sumEth3.ustShort}</div>
+
+            <h3 className={classNames(styles.h3, styles.headerSpace)}>USDT</h3>
+            <div title={String(usdt3)}>{formatFiat(usdt3, 'usd')}</div>
+          </div>
         </div>
 
         <div>

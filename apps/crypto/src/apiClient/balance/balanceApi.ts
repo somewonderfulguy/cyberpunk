@@ -1,6 +1,6 @@
 import request from '@repo/shared/utils/request'
 
-import { ToUsd, EthScan, TonScan, SolScan, TonJettonsScan } from './balanceTypes'
+import type { ToUsd, EthScan, TonScan, SolScan, TonJettonsScan } from './balanceTypes'
 import {
   getRatesCoingeckoUrl,
   getBlastBalanceUrl,
@@ -11,7 +11,9 @@ import {
   getZoraBalanceUrl,
   getTonBalanceUrl,
   getTonTokensUrl,
-  getSolanaBaseUrl
+  getSolanaBaseUrl,
+  getMantleBalanceUrl,
+  getUSDTBalanceUrl
 } from './balanceUrls'
 
 export const getRatesCoingecko = () => request<ToUsd>(getRatesCoingeckoUrl)
@@ -33,3 +35,7 @@ export const getTonBalance = (address: string) => request<TonScan>(getTonBalance
 export const getTonTokens = (address: string) => request<TonJettonsScan>(getTonTokensUrl(address))
 
 export const getSolBalance = (address: string) => request<SolScan>(getSolanaBaseUrl(address))
+
+export const getMantleBalance = (address: string) => request<EthScan>(getMantleBalanceUrl(address))
+
+export const getUSDTBalance = (address: string) => request<EthScan>(getUSDTBalanceUrl(address))
