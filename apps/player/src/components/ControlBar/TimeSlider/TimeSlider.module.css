@@ -1,0 +1,57 @@
+.root {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  touch-action: none;
+  width: 100%;
+  height: 10px;
+
+  &:hover,
+  &:has(.thumb:focus-visible) {
+    .track {
+      transform: scaleY(1.5);
+    }
+    .thumb {
+      transform: scale(1.4);
+    }
+  }
+}
+
+.trackContainer {
+  width: 100%;
+  clip-path: polygon(12px -7px, 98.5% -13px, 101% 466.67%, -14px 533.33%);
+}
+
+.track {
+  display: block;
+  background-color: gray;
+  position: relative;
+  flex-grow: 1;
+  height: 3px;
+  transition: transform 0.2s;
+}
+
+.range {
+  position: absolute;
+  background-color: var(--cb-accent-color);
+  height: 100%;
+  margin-right: -1px;
+}
+
+.thumb {
+  cursor: pointer;
+  display: block;
+  width: 10px;
+  height: 10px;
+  transform: scale(0.3);
+  background-color: var(--cb-accent-color);
+  border-radius: 10px;
+  transition: transform 0.2s;
+  transform-origin: center;
+
+  &:focus-visible {
+    outline: none;
+  }
+}

@@ -1,0 +1,91 @@
+/**
+  * Cyberpunk UI theme variables
+  * 
+  * primary - background (e.g. yellow)
+  * secondary - text (e.g. black)
+  * tertiary - alternative background (e.g. green)
+  * quaternary - alternative text (e.g. white)
+  * quinary - alternative color for any purposes
+  * accent - something active (e.g. turquoise)
+  * accent-alt - something active (e.g. red); alt might better readable on some backgrounds
+  *
+  */
+
+.theme:global(.cyberpunk-ui-theme-yellow) {
+  --cb-base: var(--cb-yellow-base);
+  --cb-base-secondary: var(--cb-black-base);
+  --cb-base-accent: var(--cb-turquoise-base);
+  --cb-base-accent-alt: var(--cb-red-vivid-base);
+
+  --cb-primary-color: var(--cb-yellow-main);
+  --cb-secondary-color: var(--cb-black);
+  --cb-accent-color: var(--cb-turquoise);
+  --cb-accent-color-hover: var(--cb-turquoise-lighter);
+  --cb-accent-color-active: var(--cb-red-vivid);
+  --cb-accent-color-alt: var(--cb-red-vivid);
+
+  --cb-background-color: var(--cb-yellow-main);
+  --cb-text-color: var(--cb-black);
+  --cb-text-color-inverted: var(--cb-white);
+}
+
+.theme:global(.cyberpunk-ui-theme-dark-red) {
+  --cb-base: var(--cb-midnight-navy-base);
+  --cb-base-start: var(--cb-darkRed-background-gradient-start);
+  --cb-base-end: var(--cb-darkRed-background-gradient-end);
+  --cb-base-secondary: var(--cb-red-base);
+  --cb-base-accent: var(--cb-turquoise-light-white-base);
+
+  --cb-primary-color: var(--cb-midnight-navy);
+  --cb-secondary-color: var(--cb-red);
+  --cb-accent-color: var(--cb-turquoise);
+  --cb-accent-color-alt: var(--cb-turquoise-darker);
+
+  --cb-background-image: var(--cb-darkRed-background-gradient);
+  --cb-background-color: var(--cb-midnight-navy);
+
+  --cb-text-color: var(--cb-red);
+}
+
+.theme:global(.cyberpunk-ui-theme-dark) {
+  --cb-base: var(--cb-darkest-gray-base);
+  --cb-base-secondary: var(--cb-yellow-alt-base);
+  --cb-base-accent: var(--cb-turquoise-base);
+  --cb-base-primary: var(--cb-darkest-gray-base);
+  --cb-base-secondary: var(--cb-yellow-alt-base);
+  --cb-base-tertiary: var(--cb-green-light-base);
+  --cb-base-quaternary: var(--cb-green-dark-base);
+  --cb-base-quinary: var(--cb-green-mid-base);
+
+  --cb-primary-color: var(--cb-darkest-gray);
+  --cb-secondary-color: var(--cb-yellow-alt);
+  --cb-tertiary-color: var(--cb-green-light);
+  --cb-quaternary-color: var(--cb-green-dark);
+  --cb-quinary-color: var(--cb-green-mid);
+  --cb-accent-color: var(--cb-turquoise);
+  --cb-accent-color-alt: var(--cb-red-mid);
+
+  --cb-background-color: var(--cb-darkest-gray);
+
+  --cb-text-color: var(--cb-yellow-alt);
+}
+
+.theme:global(.cyberpunk-ui-theme-white-on-black) {
+  --cb-base: var(--cb-black-base);
+  --cb-base-secondary: var(--cb-white-base);
+  --cb-base-accent: var(--cb-turquoise-base);
+  --cb-base-accent-hover: var(--cb-turquoise-lighter-base);
+  --cb-base-accent-alt: var(--cb-yellow-base);
+
+  --cb-primary-color: var(--cb-black);
+  --cb-secondary-color: var(--cb-white);
+  --cb-accent-color: var(--cb-turquoise);
+  --cb-accent-color-hover: var(--cb-turquoise-light-white);
+  --cb-accent-color-active: var(--cb-turquoise);
+  --cb-accent-color-alt: var(--cb-yellow-main);
+
+  --cb-background-color: var(--cb-black);
+
+  --cb-text-color: var(--cb-white);
+  --cb-text-color-inverted: var(--cb-black);
+}

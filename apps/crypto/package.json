@@ -1,0 +1,55 @@
+{
+  "name": "@repo/crypto",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 7040",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint . --ext ts,tsx --max-warnings 0",
+    "check-types": "tsc",
+    "storybook": "storybook dev -p 7041 --no-open",
+    "build-storybook": "storybook build"
+  },
+  "exports": {
+    ".": "./src/app/page.tsx"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.52.1",
+    "augmented-ui": "^2.0.0",
+    "next": "14.2.5"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.52.1",
+    "augmented-ui": "^2.0.0",
+    "next": "14.2.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tonweb": "^0.0.66"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "1.7.0",
+    "@repo/design-system": "workspace:*",
+    "@repo/shared": "workspace:*",
+    "@repo/state": "workspace:*",
+    "@storybook/addon-essentials": "^8.2.9",
+    "@storybook/addon-interactions": "^8.2.9",
+    "@storybook/addon-links": "^8.2.9",
+    "@storybook/blocks": "^8.2.9",
+    "@storybook/nextjs": "^8.2.7",
+    "@storybook/react": "^8.2.9",
+    "@storybook/test": "^8.2.9",
+    "@svgr/webpack": "^8.1.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^8.0.1",
+    "@typescript-eslint/parser": "^8.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-storybook": "^0.8.0",
+    "storybook": "^8.2.9",
+    "typescript": "^5"
+  }
+}

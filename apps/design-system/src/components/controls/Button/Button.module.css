@@ -1,0 +1,186 @@
+.buttonWrapper {
+  width: fit-content;
+
+  --aug-border-all: 1px;
+  :global(.cyberpunk-ui-theme-dark-red) & {
+    --aug-border-bg: var(--cb-accent-color);
+  }
+  :global(.cyberpunk-ui-theme-dark) & {
+    --aug-border-bg: var(--cb-tertiary-color);
+  }
+
+  --aug-l1: 0px;
+  --aug-l1-width: 12px;
+  --aug-l1-height: 2px;
+  &.small {
+    --aug-l1-width: 10px;
+  }
+
+  --aug-r1: 0px;
+  --aug-r1-width: 12px;
+  --aug-r1-height: 2px;
+
+  --aug-bl: 18px;
+  --aug-br: 18px;
+  --aug-tl: 18px;
+  --aug-tr: 18px;
+  &.small {
+    --aug-bl: 15px;
+    --aug-br: 15px;
+    --aug-tl: 15px;
+    --aug-tr: 15px;
+  }
+}
+
+.buttonWrapper.buttonSvg {
+  width: 20px;
+  height: 20px;
+
+  .button {
+    background: transparent;
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    & svg {
+      color: var(--cb-secondary-color);
+      transition: color 0.2s;
+      width: 100%;
+      height: 100%;
+    }
+    &:active svg,
+    &[aria-pressed='true'] svg {
+      color: var(--cb-accent-color);
+      :global(.cyberpunk-ui-theme-yellow) & {
+        color: var(--cb-accent-color-alt);
+      }
+
+      /* fixes nested themes (e.g. white-on-black under yellow theme) */
+      :global(.cyberpunk-ui-theme-white-on-black) & {
+        color: var(--cb-accent-color);
+      }
+    }
+
+    .svgGlow {
+      width: 100%;
+      height: 100%;
+      & svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      transition: opacity 0.2s;
+
+      filter: drop-shadow(0px 0px 3px var(--cb-accent-color))
+        drop-shadow(0px 0px 12px var(--cb-accent-color))
+        drop-shadow(0px 0px 16px var(--cb-accent-color));
+    }
+    &:hover .svgGlow,
+    &:focus-visible .svgGlow {
+      opacity: 1;
+    }
+  }
+}
+
+.buttonWrapper.buttonFilled .button {
+  color: var(--cb-text-color);
+  background-color: var(--cb-accent-color);
+
+  &:hover {
+    background-color: var(--cb-accent-color-hover);
+  }
+  &:active {
+    color: var(--cb-text-color-inverted);
+    background-color: var(--cb-accent-color-active);
+  }
+
+  :global(.cyberpunk-ui-theme-dark) & {
+    color: var(--cb-tertiary-color);
+    background-color: var(--cb-quinary-color);
+
+    &:hover,
+    &:focus-visible {
+      text-shadow: 0 0 21px var(--cb-tertiary-color),
+        0 0 42px var(--cb-tertiary-color), 0 0 82px var(--cb-tertiary-color),
+        0 0 92px var(--cb-tertiary-color), 0 0 102px var(--cb-tertiary-color),
+        0 0 151px var(--cb-tertiary-color);
+    }
+
+    &:active {
+      background-color: var(--cb-tertiary-color);
+      color: var(--cb-quaternary-color);
+    }
+  }
+
+  :global(.cyberpunk-ui-theme-dark-red) & {
+    color: var(--cb-accent-color);
+    background-color: var(--cb-accent-color-alt);
+
+    &:hover,
+    &:focus-visible {
+      text-shadow: 0 0 21px var(--cb-accent-color),
+        0 0 42px var(--cb-accent-color), 0 0 82px var(--cb-accent-color),
+        0 0 92px var(--cb-accent-color), 0 0 102px var(--cb-accent-color),
+        0 0 151px var(--cb-accent-color);
+    }
+
+    &:active {
+      background-color: var(--cb-accent-color);
+      color: var(--cb-primary-color);
+    }
+  }
+
+  :global(.cyberpunk-ui-theme-white-on-black) & {
+    color: var(--cb-text-color-inverted);
+    background-color: var(--cb-secondary-color);
+
+    &:hover {
+      background-color: var(--cb-accent-color-hover);
+    }
+    &:active {
+      background-color: var(--cb-accent-color-active);
+    }
+  }
+}
+
+.button {
+  all: unset;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+
+  height: 48px;
+  width: 232px;
+  .small & {
+    height: 40px;
+    width: 193px;
+  }
+
+  text-align: center;
+  text-transform: uppercase;
+
+  font-family: 'Blender Pro Bold', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  .small & {
+    font-size: 18px;
+  }
+
+  transition: background-color 0.2s, color 0.2s, opacity 0.2s, text-shadow 0.2s;
+
+  text-shadow: 0 0 21px transparent, 0 0 42px transparent, 0 0 82px transparent,
+    0 0 92px transparent, 0 0 102px transparent, 0 0 151px transparent;
+
+  & > * {
+    display: block;
+    margin: 0 auto;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.25;
+  }
+}
