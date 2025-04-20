@@ -1,1 +1,1 @@
-export { default } from './SoundControl.tsx'
+export { default } from './SoundControl'

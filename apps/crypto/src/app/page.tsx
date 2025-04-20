@@ -26,11 +26,11 @@ const ethWallet = ''
 const solWallet = ''
 const tonWallet = ''
 
-const tonWeb = new TonWeb.utils.Address(tonWallet)
-const hashPartHex = Array.from(tonWeb.hashPart)
-  .map((byte) => byte.toString(16).padStart(2, '0')) // Convert each byte to a hex string and pad with zeros if necessary
+const tonWeb = tonWallet ? new TonWeb.utils.Address(tonWallet) : null
+const hashPartHex = (tonWeb ? Array.from(tonWeb.hashPart) : null)
+  ?.map((byte) => byte.toString(16).padStart(2, '0')) // Convert each byte to a hex string and pad with zeros if necessary
   .join('')
-const tonRawHexAddress = `${tonWeb.wc}:${hashPartHex}`
+const tonRawHexAddress = `${tonWeb?.wc}:${hashPartHex}`
 
 const getEth = (wei: string) => {
   const ethBalance = parseInt(wei) / 1e18

@@ -1,1 +1,1 @@
-export { default } from './FullscreenButton.tsx'
+export { default } from './FullscreenButton'

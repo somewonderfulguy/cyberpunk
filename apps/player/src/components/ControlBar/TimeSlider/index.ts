@@ -1,1 +1,1 @@
-export { default } from './TimeSlider.tsx'
+export { default } from './TimeSlider'

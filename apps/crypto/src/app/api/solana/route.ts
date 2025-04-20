@@ -14,10 +14,7 @@ export async function GET(request: Request) {
   }
 
   if (!isValidSolanaAddress(address)) {
-    return NextResponse.json(
-      { error: 'Invalid Solana address' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid Solana address' }, { status: 400 })
   }
 
   try {
@@ -43,6 +40,8 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ balance: data.result.value })
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error fetching Solana balance:', error)
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })
   }
 }

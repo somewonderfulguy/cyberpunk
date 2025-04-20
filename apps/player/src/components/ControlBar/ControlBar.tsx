@@ -8,15 +8,18 @@ import FullscreenButton from './FullscreenButton'
 import TimeCount from './TimeCount'
 
 import styles from './ControlBar.module.css'
-import PlayIcon from './assets/trianglePointsToRight.svg?react'
-import PrevIcon from './assets/previous.svg?react'
 import graffiti from './assets/graffiti.png'
 import sprayTopRight from './assets/sprayTopRight.png'
 import sprayBottomLeak from './assets/sprayBottomLeak2.png'
-import Repeat from './assets/repeat.svg?react'
-import Shuffle from './assets/shuffle.svg?react'
+import {
+  PreviousIcon,
+  RepeatIcon,
+  ShuffleIcon,
+  TrianglePointsToRightIcon as PlayIcon
+} from './assets/controlBarIcons'
 
-const getImgUrl = (img: unknown) => typeof img === 'string' ? img : (img as { src: string })?.src
+const getImgUrl = (img: unknown) =>
+  typeof img === 'string' ? img : (img as { src: string })?.src
 
 const ControlBar = () => {
   return (
@@ -51,14 +54,14 @@ const ControlBar = () => {
             </div>
             <div className={styles.mainButtons}>
               <button type="button" className={styles.shuffleButton}>
-                <Shuffle />
+                <ShuffleIcon />
               </button>
               <Button
                 cutBottomLeftCorner
                 className={styles.prevBtn}
                 buttonSize="small"
               >
-                <PrevIcon />
+                <PreviousIcon />
               </Button>
               <Button cutBottomLeftCorner className={styles.playBtn}>
                 <PlayIcon />
@@ -68,12 +71,12 @@ const ControlBar = () => {
                 className={styles.nextButton}
                 buttonSize="small"
               >
-                <PrevIcon />
+                <PreviousIcon />
               </Button>
               {/* aria-pressed={state !== 0}
               aria-label={'No Repeat' | 'Repeat All' | 'Repeat One'} */}
               <button type="button" className={styles.repeatButton}>
-                <Repeat />
+                <RepeatIcon />
               </button>
             </div>
             <div className={styles.sideControls}>

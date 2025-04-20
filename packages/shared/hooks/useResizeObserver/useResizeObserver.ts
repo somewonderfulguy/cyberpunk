@@ -19,15 +19,19 @@ const useResizeObserver = <TElement extends HTMLElement = HTMLDivElement>(
     }) as ResizeObserverCallback,
     throttleDelay
   )
-  const [resizeObserver] = useState(() => new ResizeObserver(observer))
+  const [resizeObserver] = useState(() => {
+    if (typeof window !== 'undefined' && window.ResizeObserver) {
+      return new ResizeObserver(observer)
+    }
+  })
   const disconnect = useCallback(
-    () => resizeObserver.disconnect(),
+    () => resizeObserver?.disconnect(),
     [resizeObserver]
   )
 
   useLayoutEffect(() => {
     if (elemRef.current) {
-      resizeObserver.observe(elemRef.current)
+      resizeObserver?.observe(elemRef.current)
     }
     return disconnect
   }, [resizeObserver, disconnect, elemRef])

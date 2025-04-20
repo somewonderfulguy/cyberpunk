@@ -3,9 +3,7 @@ import * as Slider from '@radix-ui/react-slider'
 import Button from '@repo/design-system/controls/Button'
 
 import styles from './SoundControl.module.css'
-import SoundDisabledIcon from './assets/soundDisabled.svg?react'
-import SoundLowIcon from './assets/soundLow.svg?react'
-import SoundMaxIcon from './assets/soundMax.svg?react'
+import { SoundMaxIcon } from './assets/soundControlIcons'
 
 const SoundControl = () => {
   return (

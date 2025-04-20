@@ -4,8 +4,7 @@ import { useState } from 'react'
 
 import Button from '@repo/design-system/controls/Button'
 
-import ExpandButton from './assets/expand.svg?react'
-import ShrinkButton from './assets/shrink.svg?react'
+import { ExpandIcon, ShrinkIcon } from './assets/fullscreenButtonIcons'
 
 const FullscreenButton = () => {
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -16,7 +15,7 @@ const FullscreenButton = () => {
       onClick={() => setIsFullscreen((prev) => !prev)}
       style={{ width: 18, height: 18 }}
     >
-      {isFullscreen ? <ShrinkButton /> : <ExpandButton />}
+      {isFullscreen ? <ShrinkIcon /> : <ExpandIcon />}
     </Button>
   )
 }
