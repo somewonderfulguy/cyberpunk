@@ -13,7 +13,9 @@ import {
   getZoraBalance,
   getTonBalance,
   getTonTokens,
-  getSolBalance
+  getSolBalance,
+  getUSDTBalance,
+  getMantleBalance
 } from './balanceApi'
 
 type QueryOptions<T> = Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>
@@ -42,6 +44,20 @@ export const useGetEtherBalance = (address: string, options: QueryOptions<EthSca
   useQuery<EthScan>({
     queryKey: ['ethBalance', address],
     queryFn: () => getEtherBalance(address),
+    ...options
+  })
+
+export const useGetUSDTBalance = (address: string, options: QueryOptions<EthScan> = {}) =>
+  useQuery<EthScan>({
+    queryKey: ['usdtBalance', address],
+    queryFn: () => getUSDTBalance(address),
+    ...options
+  })
+
+export const useGetMantleBalance = (address: string, options: QueryOptions<EthScan> = {}) =>
+  useQuery<EthScan>({
+    queryKey: ['mantleBalance', address],
+    queryFn: () => getMantleBalance(address),
     ...options
   })
 
