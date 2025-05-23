@@ -1,4 +1,5 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
+import { TronWeb } from 'tronweb'
 
 import request from '@repo/shared/utils/request'
 
@@ -19,6 +20,49 @@ import {
 } from './balanceApi'
 
 type QueryOptions<T> = Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>
+
+const tronWeb = new TronWeb({
+  fullHost: 'https://api.trongrid.io',
+  headers: { 'TRON-PRO-API-KEY': '' }
+})
+
+const USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
+
+const getUSDTBalanceTron = async (address: string) => {
+  tronWeb.setAddress(address)
+
+  const contract = await tronWeb.contract().at(USDT_CONTRACT)
+
+  const balanceRaw = (await contract.methods.balanceOf(address).call()) as unknown as bigint
+  const decimalsRaw = (await contract.methods.decimals().call()) as unknown as bigint
+
+  const balance = BigInt(balanceRaw)
+  const decimals = BigInt(decimalsRaw)
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return Number(balance) / Number(10n ** decimals)
+}
+
+const getTronBalance = async (address: string) => {
+  const balance = await tronWeb.trx.getBalance(address)
+  const adjusted = tronWeb.toBigNumber(balance).dividedBy(1e6) // Adjust for TRX decimals
+  return Number(adjusted)
+}
+
+export const useGetUSDTBalanceTron = (address: string, options: QueryOptions<unknown> = {}) =>
+  useQuery<unknown>({
+    queryKey: ['usdtBalanceTron', address],
+    queryFn: () => getUSDTBalanceTron(address),
+    ...options
+  })
+
+export const useGetTronBalance = (address: string, options: QueryOptions<unknown> = {}) =>
+  useQuery<unknown>({
+    queryKey: ['tronBalance', address],
+    queryFn: () => getTronBalance(address),
+    ...options
+  })
 
 export const useGetRatesCoingecko = (options: QueryOptions<ToUsd> = {}) =>
   useQuery<ToUsd>({

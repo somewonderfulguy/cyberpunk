@@ -9,6 +9,7 @@ export type ToUsd = {
   notcoin: Fiat
   solana: Fiat
   'the-open-network': Fiat
+  tron: Fiat
 }
 
 export type TransformedBalance = {

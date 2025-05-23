@@ -12,11 +12,13 @@ import {
   useGetSolBalance,
   useTonTokens,
   useGetUSDTBalance,
-  useGetMantleBalance
+  useGetMantleBalance,
+  useGetTronBalance,
+  useGetUSDTBalanceTron
 } from '../apiClient/balance'
 import { formatFiat } from '../utils'
 
-import { btcWallet, ethWallet1, ethWallet2, ethWallet3, solWallet, tonWallet } from './wallets'
+import { btcWallet, ethWallet1, ethWallet2, ethWallet3, solWallet, tonWallet, tronWallet } from './wallets'
 
 import styles from './Crypto.module.css'
 
@@ -43,17 +45,25 @@ const initialData = { balance: 0, balanceShort: 0 }
 
 const CryptoApp = () => {
   const { data: rates } = useGetRatesCoingecko()
-  const { data: etherBalance1 } = useGetEtherBalance(ethWallet1)
-  const { data: etherBalance2 } = useGetEtherBalance(ethWallet2)
-  const { data: etherBalance3 } = useGetEtherBalance(ethWallet3)
-  const { data: etherBalance1Usdt1 } = useGetUSDTBalance(ethWallet1)
-  const { data: etherBalance1Usdt2 } = useGetUSDTBalance(ethWallet2)
-  const { data: etherBalance1Usdt3 } = useGetUSDTBalance(ethWallet3)
+  const { data: etherBalance1, isSuccess: oneIsSuccess } = useGetEtherBalance(ethWallet1)
+  const { data: etherBalance2, isSuccess: twoIsSuccess } = useGetEtherBalance(ethWallet2, { enabled: oneIsSuccess })
+  const { data: etherBalance3, isSuccess: threeIsSuccess } = useGetEtherBalance(ethWallet3, { enabled: twoIsSuccess })
+  const { data: etherBalance1Usdt1, isSuccess: fourIsSuccess } = useGetUSDTBalance(ethWallet1, {
+    enabled: threeIsSuccess
+  })
+  const { data: etherBalance1Usdt2, isSuccess: fiveIsSuccess } = useGetUSDTBalance(ethWallet2, {
+    enabled: fourIsSuccess
+  })
+  const { data: etherBalance1Usdt3 } = useGetUSDTBalance(ethWallet3, { enabled: fiveIsSuccess })
   const { data: { balance: btc, balanceShort: btcShort } = initialData } = useGetBtcBalance(btcWallet)
   const { data: solBalance } = useGetSolBalance(solWallet)
   const { data: tonBalance } = useGetTonBalance(tonWallet)
   const { data: tonTokens } = useTonTokens(tonRawHexAddress)
   const { data: mantleBalance } = useGetMantleBalance(ethWallet1)
+  const { data: tronBalance } = useGetTronBalance(tronWallet)
+  const { data: tronUsdt } = useGetUSDTBalanceTron(tronWallet)
+
+  const tronInUSD = (rates?.tron.usd ?? 0) * ((tronBalance as number) ?? 0)
 
   const notcoin = tonTokens?.balances.find((balance) => balance.jetton.name === 'Notcoin')
   const notcoinRawBalance = +(notcoin?.balance ?? 0)
@@ -97,7 +107,9 @@ const CryptoApp = () => {
     usdt1 +
     usdt2 +
     usdt3 +
-    mantleInUst
+    mantleInUst +
+    tronInUSD +
+    (tronUsdt as number)
 
   return (
     <div className={styles.wrapper}>
@@ -243,37 +255,63 @@ const CryptoApp = () => {
         </div>
 
         <div>
-          <h2 className={classNames(styles.h2, styles.headerSpace)}>
-            TON <span className={styles.titleNote}>TON</span>
-          </h2>
-          <p className={styles.cryptoCurrencyPrice}>
-            Price:{' '}
-            {formatFiat(rates?.['the-open-network'].usd ?? 0, 'usd', {
-              maximumSignificantDigits: 21
-            })}
-          </p>
-          <p style={{ marginBottom: 16 }}>
-            Wallet:{' '}
-            <span title={tonWallet}>
-              {/* TODO: add copy */}
-              {tonWallet.slice(0, 7)}...{tonWallet.slice(-5)}
-            </span>
-          </p>
-          <div title={String(tonRawBalance)}>{tonRawBalance.toFixed(4)} TON</div>
-          <div title={String(tonInUst)}>{formatFiat(tonInUst, 'usd')}</div>
+          <div>
+            <h2 className={classNames(styles.h2, styles.headerSpace)}>
+              TON <span className={styles.titleNote}>TON</span>
+            </h2>
+            <p className={styles.cryptoCurrencyPrice}>
+              Price:{' '}
+              {formatFiat(rates?.['the-open-network'].usd ?? 0, 'usd', {
+                maximumSignificantDigits: 21
+              })}
+            </p>
+            <p style={{ marginBottom: 16 }}>
+              Wallet:{' '}
+              <span title={tonWallet}>
+                {/* TODO: add copy */}
+                {tonWallet.slice(0, 7)}...{tonWallet.slice(-5)}
+              </span>
+            </p>
+            <div title={String(tonRawBalance)}>{tonRawBalance.toFixed(4)} TON</div>
+            <div title={String(tonInUst)}>{formatFiat(tonInUst, 'usd')}</div>
 
-          <h3 className={classNames(styles.h3, styles.headerSpace)}>NOT</h3>
-          <p className={styles.cryptoCurrencyPrice}>
-            Price:{' '}
-            {formatFiat(rates?.notcoin.usd ?? 0, 'usd', {
-              maximumSignificantDigits: 21
-            })}
-          </p>
-          <div title={String(notcoinRawBalance)}>{notBalance.toFixed(4)} NOT</div>
-          <div title={String(notInUst)}>{formatFiat(notInUst, 'usd')}</div>
+            <h3 className={classNames(styles.h3, styles.headerSpace)}>NOT</h3>
+            <p className={styles.cryptoCurrencyPrice}>
+              Price:{' '}
+              {formatFiat(rates?.notcoin.usd ?? 0, 'usd', {
+                maximumSignificantDigits: 21
+              })}
+            </p>
+            <div title={String(notcoinRawBalance)}>{notBalance.toFixed(4)} NOT</div>
+            <div title={String(notInUst)}>{formatFiat(notInUst, 'usd')}</div>
 
-          <h3 className={classNames(styles.h3, styles.headerSpace)}>Tether USD</h3>
-          <div title={String(tonUsdtBalance)}>{tonUsdtBalance.toFixed(2)} USDT</div>
+            <h3 className={classNames(styles.h3, styles.headerSpace)}>Tether USD</h3>
+            <div title={String(tonUsdtBalance)}>{tonUsdtBalance.toFixed(2)} USDT</div>
+          </div>
+
+          <div>
+            <h2 className={classNames(styles.h2, styles.headerSpace)}>
+              Tron <span className={styles.titleNote}>TRX</span>
+            </h2>
+            <p className={styles.cryptoCurrencyPrice}>
+              Price:{' '}
+              {formatFiat(rates?.tron.usd ?? 0, 'usd', {
+                maximumSignificantDigits: 21
+              })}
+            </p>
+            <p style={{ marginBottom: 16 }}>
+              Wallet:{' '}
+              <span title={tronWallet}>
+                {/* TODO: add copy */}
+                {tronWallet.slice(0, 7)}...{tronWallet.slice(-5)}
+              </span>
+            </p>
+            <div title={String(tronBalance)}>{(tronBalance as number)?.toFixed(4)} TRX</div>
+            <div title={String(tronInUSD)}>{formatFiat(tronInUSD, 'usd')}</div>
+
+            <h3 className={classNames(styles.h3, styles.headerSpace)}>USDT</h3>
+            <div title={String(tronUsdt)}>{(tronUsdt as number)?.toFixed(2)} USDT</div>
+          </div>
         </div>
       </div>
     </div>
