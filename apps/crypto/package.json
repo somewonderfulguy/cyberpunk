@@ -25,7 +25,8 @@
     "next": "14.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tonweb": "^0.0.66"
+    "tonweb": "^0.0.66",
+    "tronweb": "^6.0.3"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "1.7.0",
