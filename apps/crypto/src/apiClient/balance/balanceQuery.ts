@@ -15,6 +15,7 @@ import {
   getTonBalance,
   getTonTokens,
   getSolBalance,
+  getSolUsdtBalance,
   getUSDTBalance,
   getMantleBalance
 } from './balanceApi'
@@ -23,7 +24,7 @@ type QueryOptions<T> = Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>
 
 const tronWeb = new TronWeb({
   fullHost: 'https://api.trongrid.io',
-  headers: { 'TRON-PRO-API-KEY': '' }
+  headers: { 'TRON-PRO-API-KEY': 'c86f1038-8c84-4f2f-8ac5-9957bcf4b589' }
 })
 
 const USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
@@ -158,5 +159,12 @@ export const useGetSolBalance = (address: string, options: QueryOptions<SolScan>
   useQuery<SolScan>({
     queryKey: ['solBalance', address],
     queryFn: () => getSolBalance(address),
+    ...options
+  })
+
+export const useGetSolUsdtBalance = (address: string, options: QueryOptions<SolScan> = {}) =>
+  useQuery<SolScan>({
+    queryKey: ['solUsdtBalance', address],
+    queryFn: () => getSolUsdtBalance(address),
     ...options
   })
