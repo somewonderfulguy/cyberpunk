@@ -13,7 +13,8 @@ import {
   getTonTokensUrl,
   getSolanaBaseUrl,
   getMantleBalanceUrl,
-  getUSDTBalanceUrl
+  getUSDTBalanceUrl,
+  getSolanaUsdtUrl
 } from './balanceUrls'
 
 export const getRatesCoingecko = () => request<ToUsd>(getRatesCoingeckoUrl)
@@ -39,3 +40,5 @@ export const getSolBalance = (address: string) => request<SolScan>(getSolanaBase
 export const getMantleBalance = (address: string) => request<EthScan>(getMantleBalanceUrl(address))
 
 export const getUSDTBalance = (address: string) => request<EthScan>(getUSDTBalanceUrl(address))
+
+export const getSolUsdtBalance = (address: string) => request<SolScan>(getSolanaUsdtUrl(address))

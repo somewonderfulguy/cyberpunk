@@ -34,3 +34,5 @@ export const getTonTokensUrl = (address: string) =>
 export const getSolanaBaseUrl = (address: string) => `/api/solana?address=${address}`
 
 export const getRatesCoingeckoUrl = `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,notcoin,the-open-network,mantle,tron&vs_currencies=usd,uah,gbp,eur,pln,jpy`
+
+export const getSolanaUsdtUrl = (address: string) => `/api/solana-usdt?address=${address}`

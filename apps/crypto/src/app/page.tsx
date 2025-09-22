@@ -10,6 +10,7 @@ import {
   useGetBtcBalance,
   useGetTonBalance,
   useGetSolBalance,
+  useGetSolUsdtBalance,
   useTonTokens,
   useGetUSDTBalance,
   useGetMantleBalance,
@@ -47,16 +48,17 @@ const CryptoApp = () => {
   const { data: rates } = useGetRatesCoingecko()
   const { data: etherBalance1, isSuccess: oneIsSuccess } = useGetEtherBalance(ethWallet1)
   const { data: etherBalance2, isSuccess: twoIsSuccess } = useGetEtherBalance(ethWallet2, { enabled: oneIsSuccess })
-  const { data: etherBalance3, isSuccess: threeIsSuccess } = useGetEtherBalance(ethWallet3, { enabled: twoIsSuccess })
+  // const { data: etherBalance3, isSuccess: threeIsSuccess } = useGetEtherBalance(ethWallet3, { enabled: twoIsSuccess })
   const { data: etherBalance1Usdt1, isSuccess: fourIsSuccess } = useGetUSDTBalance(ethWallet1, {
-    enabled: threeIsSuccess
+    enabled: twoIsSuccess
   })
-  const { data: etherBalance1Usdt2, isSuccess: fiveIsSuccess } = useGetUSDTBalance(ethWallet2, {
+  const { data: etherBalance1Usdt2 } = useGetUSDTBalance(ethWallet2, {
     enabled: fourIsSuccess
   })
-  const { data: etherBalance1Usdt3 } = useGetUSDTBalance(ethWallet3, { enabled: fiveIsSuccess })
+  // const { data: etherBalance1Usdt3 } = useGetUSDTBalance(ethWallet3, { enabled: fiveIsSuccess })
   const { data: { balance: btc, balanceShort: btcShort } = initialData } = useGetBtcBalance(btcWallet)
   const { data: solBalance } = useGetSolBalance(solWallet)
+  const { data: solUsdtData } = useGetSolUsdtBalance(solWallet, { retry: false })
   const { data: tonBalance } = useGetTonBalance(tonWallet)
   const { data: tonTokens } = useTonTokens(tonRawHexAddress)
   const { data: mantleBalance } = useGetMantleBalance(ethWallet1)
@@ -81,32 +83,35 @@ const CryptoApp = () => {
   const solInNative = solRawBalance / 1_000_000_000 // 1e9
   const solInUst = solInNative * (rates?.solana.usd ?? 1)
 
+  const solUsdt = +(solUsdtData?.balance ?? 0)
+
   const btcRate = rates?.bitcoin.usd ?? NaN
   const btcUst = btc * btcRate || 0
 
   const usdt1 = Number(etherBalance1Usdt1?.result) / 1e6 || 0
   const usdt2 = Number(etherBalance1Usdt2?.result) / 1e6 || 0
-  const usdt3 = Number(etherBalance1Usdt3?.result) / 1e6 || 0
+  // const usdt3 = Number(etherBalance1Usdt3?.result) / 1e6 || 0
 
   const mantle = +(mantleBalance?.result ?? 0) / 1e18
   const mantleInUst = mantle * (rates?.mantle.usd ?? 1)
 
   const sumEth1 = getSumEth([etherBalance1?.result ?? '0'], rates?.ethereum.usd ?? NaN)
   const sumEth2 = getSumEth([etherBalance2?.result ?? '0'], rates?.ethereum.usd ?? NaN)
-  const sumEth3 = getSumEth([etherBalance3?.result ?? '0'], rates?.ethereum.usd ?? NaN)
+  // const sumEth3 = getSumEth([etherBalance3?.result ?? '0'], rates?.ethereum.usd ?? NaN)
 
   const sum =
     sumEth1.ustFull +
     sumEth2.ustFull +
-    sumEth3.ustFull +
+    // sumEth3.ustFull +
     btcUst +
     tonInUst +
     notInUst +
     solInUst +
+    solUsdt +
     tonUsdtBalance +
     usdt1 +
     usdt2 +
-    usdt3 +
+    // usdt3 +
     mantleInUst +
     tronInUSD +
     (tronUsdt as number)
@@ -161,6 +166,9 @@ const CryptoApp = () => {
             <div title={String(solInNative)}>{solInNative.toFixed(4)} SOL</div>
             <div title={String(solInUst)}>{formatFiat(solInUst, 'usd')}</div>
           </div>
+
+          <h3 className={classNames(styles.h3, styles.headerSpace)}>USDT</h3>
+          <div title={String(solUsdt)}>{formatFiat(solUsdt, 'usd')}</div>
 
           <h2 className={classNames(styles.h2, styles.headerSpace)}>
             Mantle <span className={styles.titleNote}>MNT</span>
@@ -229,7 +237,7 @@ const CryptoApp = () => {
             <h3 className={classNames(styles.h3, styles.headerSpace)}>USDT</h3>
             <div title={String(usdt2)}>{formatFiat(usdt2, 'usd')}</div>
           </div>
-          <div>
+          {/* <div>
             <h2 className={classNames(styles.h2, styles.headerSpace)}>
               Ethereum <span className={styles.titleNote}>ETH</span>
             </h2>
@@ -242,7 +250,6 @@ const CryptoApp = () => {
             <p style={{ marginBottom: 16 }}>
               Wallet:{' '}
               <span title={ethWallet3}>
-                {/* TODO: add copy */}
                 {ethWallet3.slice(0, 7)}...{ethWallet3.slice(-5)}
               </span>
             </p>
@@ -251,7 +258,7 @@ const CryptoApp = () => {
 
             <h3 className={classNames(styles.h3, styles.headerSpace)}>USDT</h3>
             <div title={String(usdt3)}>{formatFiat(usdt3, 'usd')}</div>
-          </div>
+          </div> */}
         </div>
 
         <div>
