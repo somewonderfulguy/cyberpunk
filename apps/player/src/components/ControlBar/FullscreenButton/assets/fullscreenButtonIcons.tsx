@@ -1,15 +1,15 @@
-import type { ComponentProps } from 'react'
+import type { ComponentProps } from "react";
 
-type IconProps = ComponentProps<'svg'>
+type IconProps = ComponentProps<"svg">;
 
 export const ExpandIcon = (props: IconProps) => (
   <svg
     stroke="currentColor"
     fill="none"
-    stroke-width="2"
+    strokeWidth="2"
     viewBox="0 0 24 24"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     height="200px"
     width="200px"
     xmlns="http://www.w3.org/2000/svg"
@@ -20,16 +20,16 @@ export const ExpandIcon = (props: IconProps) => (
     <line x1="21" x2="14" y1="3" y2="10" />
     <line x1="3" x2="10" y1="21" y2="14" />
   </svg>
-)
+);
 
 export const ShrinkIcon = (props: IconProps) => (
   <svg
     stroke="currentColor"
     fill="none"
-    stroke-width="2"
+    strokeWidth="2"
     viewBox="0 0 24 24"
-    stroke-linecap="round"
-    stroke-linejoin="round"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     height="200px"
     width="200px"
     xmlns="http://www.w3.org/2000/svg"
@@ -40,4 +40,4 @@ export const ShrinkIcon = (props: IconProps) => (
     <line x1="14" x2="21" y1="10" y2="3" />
     <line x1="3" x2="10" y1="21" y2="14" />
   </svg>
-)
+);

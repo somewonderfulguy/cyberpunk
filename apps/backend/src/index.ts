@@ -1,66 +1,102 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 7070;
 
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "HEAD", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+// Allow all origins during development; tighten this later if needed
+app.use(cors());
 app.options("*", cors());
 app.use(express.json());
+app.use("/music", express.static(path.join(__dirname, "music")));
 
+// TODO: add covers
 const songs = [
   {
-    title: "Night City",
-    subtitle:
-      "R E L and Artemis Delta • Cyberpunk 2077: Radio, Vol. 3 (Original Soundtrack)",
+    id: "1",
+    name: "Night City",
+    artist: "R E L and Artemis Delta",
+    album: "Cyberpunk 2077: Radio, Vol. 3 (Original Soundtrack)",
+    year: 2020,
+    durationInSeconds: 194,
+    explicit: false,
+    url: "/music/Night City.mp3",
   },
   {
-    title: "Delicate Weapon",
-    subtitle:
-      "Grimes and Lizzy Wizzy • Cyberpunk 2077: Radio, Vol. 2 (Original Soundtrack)",
+    id: "2",
+    name: "Chippin' In",
+    artist: "Damian Ukeje, P.T. Adamczyk and Kerry",
+    album: "Cyberpunk 2077: Radio, Vol. 3 (Original Soundtrack)",
+    year: 2020,
+    durationInSeconds: 216,
+    explicit: true,
+    url: "/music/Chippin' In.mp3",
   },
   {
-    title: "Let You Down",
-    subtitle:
-      "Dawid Podsiadło • Cyberpunk: Edgerunners (Original Series Soundtrack)",
+    id: "3",
+    name: "Kill the Messenger",
+    artist: "Rezodrone and The Cartesian Duelists",
+    album:
+      "Cyberpunk 2077: More Music from Night City Radio (Original Soundtrack)",
+    year: 2021,
+    durationInSeconds: 209,
+    explicit: false,
+    url: "/music/Kill the Messenger.mp3",
   },
   {
-    title: "Chippin' In",
-    subtitle:
-      "Damian Ukeje, P.T. Adamczyk and Kerry ... • Cyberpunk 2077: Radio, Vol. 3 (Original ...)",
+    id: "4",
+    name: "Resist and Disorder",
+    artist: "Rezodrone and The Cartesian Duelists",
+    album: "Cyberpunk 2077: Radio, Vol. 3 (Original Soundtrack)",
+    year: 2020,
+    durationInSeconds: 257,
+    explicit: false,
+    url: "/music/Resist and Disorder.mp3",
   },
   {
-    title: "Never Fade Away (feat. Refused)",
-    subtitle: "SAMURAI • Never Fade Away",
+    id: "5",
+    name: "Infiltrator",
+    artist: "Daniel Deluxe",
+    album: "Ghostrunner (Original Soundtrack)",
+    year: 2020,
+    durationInSeconds: 211,
+    explicit: false,
+    url: "/music/Infiltrator.mp3",
   },
   {
-    title: "V",
-    subtitle: "Marcin Przybyłowicz • Cyberpunk 2077 - Original Score",
+    id: "6",
+    name: "I Really Want to Stay at Your House",
+    artist: "Rosa Walton & Hallie Coggins",
+    album: "Cyberpunk 2077: Radio, Vol. 2 (Original Soundtrack)",
+    year: 2020,
+    durationInSeconds: 247,
+    explicit: true,
+    url: "/music/I Really Want to Stay at Your House.mp3",
   },
   {
-    title: "The Rebel Path",
-    subtitle: "P.T. Adamczyk • Cyberpunk 2077 - Original Score",
+    id: "7",
+    name: "Let You Down",
+    artist: "Dawid Podsiadło",
+    album: "Cyberpunk: Edgerunners (Original Series Soundtrack)",
+    year: 2023,
+    durationInSeconds: 227,
+    explicit: false,
+    url: "/music/Let You Down.mp3",
   },
   {
-    title: "Kill the Messenger",
-    subtitle:
-      "Rezodrone and The Cartesian Duelists • Cyberpunk 2077: More Music from Night City ...",
-  },
-  {
-    title: "Makes Me Feel Better",
-    subtitle:
-      "OnenO and Slavoj McAllister • Cyberpunk 2077: More Music from Night City Radio (Ori...)",
-  },
-  {
-    title: "Black Terminal (Upgrade)",
-    subtitle:
-      "Blue Stahli, Danny Cocke & Inversion • Cyberpunk 2077: More Music from Night City Ra...",
+    id: "8",
+    name: "Never Fade Away (SAMURAI Cover)",
+    artist: "P.T. Adamczyk (feat. Olga Jankowska)",
+    album: "Never Fade Away (SAMURAI Cover)",
+    year: 2020,
+    durationInSeconds: 287,
+    explicit: false,
+    url: "/music/Never Fade Away (feat. Olga Jankowska) (SAMURAI Cover).mp3",
   },
 ];
 

@@ -13,16 +13,26 @@ import useResizeObserver from "@repo/shared/hooks/useResizeObserver";
 
 import styles from "./Sidebar.module.css";
 
+type Song = {
+  id: string;
+  name: string;
+  artist: string;
+  album: string;
+  year: number;
+  durationInSeconds: number;
+  explicit: boolean;
+  url: string;
+};
+
 const Sidebar = () => {
   const [tabListHeight, setTabListHeight] = useState(0);
   const tabListRef = useResizeObserver((bounds) =>
     setTabListHeight(bounds.height)
   );
-  const [songs, setSongs] = useState<
-    Array<{ title: string; subtitle: string }>
-  >([]);
+  const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,10 +42,7 @@ const Sidebar = () => {
         setError(null);
         const res = await fetch("http://localhost:7070/songs");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as Array<{
-          title: string;
-          subtitle: string;
-        }>;
+        const data = (await res.json()) as Song[];
         if (!cancelled) setSongs(data);
       } catch (e: unknown) {
         const message = e instanceof Error ? e.message : "Failed to load songs";
@@ -71,17 +78,26 @@ const Sidebar = () => {
             )}
             {!loading && !error && (
               <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                {songs.map((s, i) => (
+                {songs.map((s) => (
                   <li
-                    key={`${s.title}-${i}`}
-                    style={{
-                      padding: "8px 0",
-                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                    key={s.id}
+                    className={styles.songItem}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      if (audio) {
+                        audio.pause();
+                      }
+                      const a = new Audio(`http://localhost:7070${s.url}`);
+                      a.play().catch(() => {
+                        // ignore play errors for now
+                      });
+                      setAudio(a);
                     }}
                   >
-                    <div style={{ fontWeight: 600 }}>{s.title}</div>
+                    <div style={{ fontWeight: 600 }}>{s.name}</div>
                     <div style={{ opacity: 0.75, fontSize: "0.9em" }}>
-                      {s.subtitle}
+                      {s.artist} • {s.album} • {s.year}
                     </div>
                   </li>
                 ))}
