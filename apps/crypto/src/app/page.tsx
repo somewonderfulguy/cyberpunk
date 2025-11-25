@@ -19,7 +19,7 @@ import {
 } from '../apiClient/balance'
 import { formatFiat } from '../utils'
 
-import { btcWallet, ethWallet1, ethWallet2, ethWallet3, solWallet, tonWallet, tronWallet } from './wallets'
+import { btcWallet, ethWallet1, ethWallet2, solWallet, tonWallet, tronWallet } from './wallets'
 
 import styles from './Crypto.module.css'
 
