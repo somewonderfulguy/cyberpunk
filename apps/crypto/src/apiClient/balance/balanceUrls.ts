@@ -1,26 +1,29 @@
+// old https://api.etherscan.io/api?&action=balance&apikey=YourEtherscanApiKey
+// new https://api.etherscan.io/v2/api?chainid=1&action=balance&apikey=YourEtherscanApiKey
+
 export const getEtherBalanceUrl = (address: string) =>
-  `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
+  `https://api.etherscan.io/v2/api?chainid=1&module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getUSDTBalanceUrl = (address: string) =>
-  `https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0xdAC17F958D2ee523a2206206994597C13D831ec7&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
+  `https://api.etherscan.io/v2/api?chainid=1&module=account&action=tokenbalance&contractaddress=0xdAC17F958D2ee523a2206206994597C13D831ec7&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getMantleBalanceUrl = (address: string) =>
-  `https://api.mantlescan.xyz/api?module=account&action=balance&address=${address}&tag=latest&apikey=3NDPNF8IM2E3XHAMQBQAF7D5XBRQPU2S4Q`
+  `https://api.etherscan.io/v2/api?chainid=5000&module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getBlastBalanceUrl = (address: string) =>
-  `https://api.blastscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=VBJ6D9KKUTW862GR3XSJM3J3GKX9UG2GWR`
+  `https://api.etherscan.io/v2/api?chainid=81457&module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getScrollBalanceUrl = (address: string) =>
-  `https://api.scrollscan.com/api?module=account&action=balance&address=${address}&tag=latest&apikey=VJBQK1AIXJ8THNVYHH7XENVUYXQRR3ITZT`
+  `https://api.etherscan.io/v2/api?chainid=534352&module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getOptimismBalanceUrl = (address: string) =>
-  `https://api-optimistic.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=K424BIE5G9FGFEY3G6E6VNZUWBG6WVHRG3`
+  `https://api.etherscan.io/v2/api?chainid=10&module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getBaseBalanceUrl = (address: string) =>
-  `https://api.basescan.org/api?module=account&action=balance&address=${address}&tag=latest&apikey=BDP6D9NDXBPIA44AGZ8DTGQJFC5CFQRYFQ`
+  `https://api.etherscan.io/v2/api?chainid=8453&module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getZoraBalanceUrl = (address: string) =>
-  `https://api.routescan.io/v2/network/mainnet/evm/8453/etherscan/api?module=account&action=balance&address=${address}&tag=latest`
+  `https://api.etherscan.io/v2/api?chainid=7777777&module=account&action=balance&address=${address}&tag=latest&apikey=AX8E1T47R1BH42MKRGM3SW1F1RXTNDMMRB`
 
 export const getBtcBalanceUrl = (address: string) => `https://api.blockcypher.com/v1/btc/main/addrs/${address}/balance`
 
