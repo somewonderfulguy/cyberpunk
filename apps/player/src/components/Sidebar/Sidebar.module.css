@@ -12,6 +12,18 @@
 .tabPanels {
   height: calc(100% - var(--_tab-list-height, 0));
 }
-.tabPanel {
+.tabPanel.tabPanel {
   height: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.songItem {
+  padding: 8px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(0, 255, 255, 0.08);
+  }
 }
