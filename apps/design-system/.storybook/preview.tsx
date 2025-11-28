@@ -1,5 +1,4 @@
-import React from 'react'
-import type { Preview } from '@storybook/react'
+import type { Preview } from '@storybook/react-vite'
 import { Addon } from 'storybook-addon-multiselect'
 import 'augmented-ui/augmented-ui.min.css'
 
@@ -20,13 +19,13 @@ const svgSharedProps2 = {
   viewBox: '0 0 16 16',
   fill: 'currentColor',
   strokeWidth: '0',
-  role: 'img'
+  role: 'img',
 }
 
 const svgPrioritySharedProps = {
   ...svgSharedProps2,
   fill: 'none',
-  viewBox: '0 0 24 24'
+  viewBox: '0 0 24 24',
 }
 
 const multiselect: Addon = {
@@ -48,21 +47,21 @@ const multiselect: Addon = {
           {
             title: 'Yellow',
             value: 'yellow',
-            icon: '🟡'
+            icon: '🟡',
           },
           {
             title: 'Dark Red',
             value: 'darkRed',
-            icon: '🔴'
+            icon: '🔴',
           },
           {
             title: 'Dark',
             value: 'dark',
-            icon: '⚫'
-          }
-        ]
-      }
-    ]
+            icon: '⚫',
+          },
+        ],
+      },
+    ],
   },
   themeAndLanguage: {
     icon: (
@@ -74,7 +73,7 @@ const multiselect: Addon = {
     description: 'Change the theme and language of the components',
     elements: [
       {
-        type: 'reset'
+        type: 'reset',
       },
       {
         type: 'singleSelect',
@@ -100,18 +99,13 @@ const multiselect: Addon = {
                   fill="currentColor"
                 />
               </svg>
-            )
+            ),
           },
           {
             title: 'Language',
             value: 'lang',
             icon: (
-              <svg
-                {...svgPrioritySharedProps}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg {...svgPrioritySharedProps} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path key={1} stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path key={2} d="M4 5h7" />
                 <path key={3} d="M7 4c0 4.846 0 7 .5 8" />
@@ -122,9 +116,9 @@ const multiselect: Addon = {
                 <path key={5} d="M12 20l4 -9l4 9" />
                 <path key={6} d="M19.1 18h-6.2" />
               </svg>
-            )
-          }
-        ]
+            ),
+          },
+        ],
       },
       {
         type: 'singleSelect',
@@ -137,31 +131,21 @@ const multiselect: Addon = {
             title: 'Horizontal',
             value: 'horizontal',
             icon: (
-              <svg
-                {...svgSharedProps2}
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 16 16"
-              >
+              <svg {...svgSharedProps2} fill="currentColor" strokeWidth="0" viewBox="0 0 16 16">
                 <path d="M14 1H3L2 2v11l1 1h11l1-1V2l-1-1zM8 13H3V2h5v11zm6 0H9V2h5v11z" />
               </svg>
-            )
+            ),
           },
           {
             title: 'Vertical',
             value: 'vertical',
             icon: (
-              <svg
-                {...svgSharedProps2}
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 16 16"
-              >
+              <svg {...svgSharedProps2} fill="currentColor" strokeWidth="0" viewBox="0 0 16 16">
                 <path d="M14 1H3L2 2v11l1 1h11l1-1V2l-1-1zm0 12H3V8h11v5zm0-6H3V2h11v5z" />
               </svg>
-            )
-          }
-        ]
+            ),
+          },
+        ],
       },
       {
         title: 'Theme',
@@ -173,24 +157,24 @@ const multiselect: Addon = {
           {
             title: 'Yellow',
             value: 'yellow',
-            icon: '🟡'
+            icon: '🟡',
           },
           {
             title: 'Dark Red',
             value: 'darkRed',
-            icon: '🔴'
+            icon: '🔴',
           },
           {
             title: 'Dark',
             value: 'dark',
-            icon: '⚫'
+            icon: '⚫',
           },
           {
             title: 'White on black',
             value: 'whiteOnBlack',
-            icon: '⚪'
-          }
-        ]
+            icon: '⚪',
+          },
+        ],
       },
       {
         title: 'Language (in progress)',
@@ -201,22 +185,22 @@ const multiselect: Addon = {
           {
             title: 'English',
             value: 'en',
-            icon: '🇬🇧'
+            icon: '🇬🇧',
           },
           {
             title: 'Polish',
             value: 'pl',
-            icon: '🇵🇱'
+            icon: '🇵🇱',
           },
           {
             title: 'Ukrainian',
             value: 'ua',
-            icon: '🇺🇦'
-          }
-        ]
-      }
-    ]
-  }
+            icon: '🇺🇦',
+          },
+        ],
+      },
+    ],
+  },
 }
 
 const preview: Preview = {
@@ -226,21 +210,21 @@ const preview: Preview = {
     controls: {
       matchers: {
         color: /(background|color)$/i,
-        date: /Date$/
-      }
+        date: /Date$/,
+      },
     },
     backgrounds: {
       disable: true,
       grid: {
-        disable: true
-      }
+        disable: true,
+      },
     },
-    multiselect
+    multiselect,
   },
-  globals: {
-    multiselect: {}
+  initialGlobals: {
+    multiselect: {},
   },
-  decorators: [ThemeAndLanguage]
+  decorators: [ThemeAndLanguage],
 }
 
 export default preview

@@ -1,18 +1,11 @@
 import { useTabsContext } from '@reach/tabs'
-import {
-  MutableRefObject,
-  ReactNode,
-  RefObject,
-  useEffect,
-  useLayoutEffect,
-  useState
-} from 'react'
+import { type MutableRefObject, type ReactNode, type RefObject, useEffect, useLayoutEffect, useState } from 'react'
 
 import { useIndicatorPositionValue, useTabsInternalValue } from './contexts'
 
 type Props = {
   children: ReactNode
-  contentRef: RefObject<HTMLDivElement>
+  contentRef: RefObject<HTMLDivElement | null>
   isHover: MutableRefObject<boolean>
 }
 
@@ -20,11 +13,7 @@ const HexagonAnimationBlock = ({ contentRef, children, isHover }: Props) => {
   const { selectedIndex } = useTabsContext()
   const animateOnHover = useTabsInternalValue((state) => state.animateOnHover)
 
-  const {
-    left: indicatorLeft,
-    width: indicatorWidth,
-    isGoingLeft
-  } = useIndicatorPositionValue((state) => state)
+  const { left: indicatorLeft, width: indicatorWidth, isGoingLeft } = useIndicatorPositionValue((state) => state)
 
   const offsetLeft = contentRef.current?.parentElement?.offsetLeft || 0
   const width = contentRef.current?.offsetWidth || 0
@@ -49,13 +38,13 @@ const HexagonAnimationBlock = ({ contentRef, children, isHover }: Props) => {
   // TODO: check if this is necessary or it could be derived
   const [{ leftClip, rightClip }, setClipValues] = useState({
     leftClip: indicatorLeft - offsetLeft,
-    rightClip: indicatorWidth + indicatorLeft - offsetLeft
+    rightClip: indicatorWidth + indicatorLeft - offsetLeft,
   })
   useEffect(() => {
     setTimeout(() => {
       setClipValues({
         leftClip: indicatorLeft - offsetLeft,
-        rightClip: indicatorWidth + indicatorLeft - offsetLeft
+        rightClip: indicatorWidth + indicatorLeft - offsetLeft,
       })
     }, 0)
   }, [indicatorLeft, indicatorWidth, offsetLeft])
@@ -67,10 +56,8 @@ const HexagonAnimationBlock = ({ contentRef, children, isHover }: Props) => {
 
   const baseLeftEdge = leftClip - threshold
   const baseRightEdge = rightClip - threshold
-  const leftEdge =
-    !animateOnHover && isSelected && isGoingLeft ? width : baseLeftEdge
-  const rightEdge =
-    !animateOnHover && isSelected && !isGoingLeft ? 0 : baseRightEdge
+  const leftEdge = !animateOnHover && isSelected && isGoingLeft ? width : baseLeftEdge
+  const rightEdge = !animateOnHover && isSelected && !isGoingLeft ? 0 : baseRightEdge
   const height = !animateOnHover && isHover.current ? 0 : '100%'
 
   return (
@@ -84,7 +71,7 @@ const HexagonAnimationBlock = ({ contentRef, children, isHover }: Props) => {
           ${/* top-left */ leftEdge}px 0,
           ${/* top-right */ rightEdge}px 0,
           ${/* bottom-right */ rightEdge}px ${height},
-          ${/* bottom-left */ leftEdge}px ${height})`
+          ${/* bottom-left */ leftEdge}px ${height})`,
       }}
     >
       {children}

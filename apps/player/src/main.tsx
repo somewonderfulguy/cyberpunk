@@ -6,13 +6,13 @@ import ThemeWrapper from '@repo/design-system/ThemeWrapper'
 import '@repo/design-system/styles/reset.css'
 import '@repo/design-system/styles/fonts.css'
 
-import PlayerApp from './components/PlayerApp'
+import { PlayerApp } from './components/PlayerApp'
 
 import styles from './styles/devMode.module.css'
 import './styles/devMode.css'
 
 ReactDOM.createRoot(document.getElementById('root')!, {
-  identifierPrefix: 'player-app-'
+  identifierPrefix: 'player-app-',
 }).render(
   <StrictMode>
     <ThemeWrapper className={styles.themeWrapper}>
@@ -20,5 +20,5 @@ ReactDOM.createRoot(document.getElementById('root')!, {
         <PlayerApp />
       </div>
     </ThemeWrapper>
-  </StrictMode>
+  </StrictMode>,
 )

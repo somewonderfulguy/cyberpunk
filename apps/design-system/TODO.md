@@ -1,1 +1,0 @@
-- See `scripts` in `package.json` you might not need `preview`. Or replace it with something that will work with storybook.
