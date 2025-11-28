@@ -1,9 +1,9 @@
-import { RefObject, useEffect, useState } from 'react'
+import { type RefObject, useEffect, useState } from 'react'
 import { useTabsContext } from '@reach/tabs'
 
 import usePrevious from '@repo/shared/hooks/usePrevious'
 
-export const useFadeInOutAnimation = (divElem: RefObject<HTMLDivElement>) => {
+export const useFadeInOutAnimation = (divElem: RefObject<HTMLDivElement | null>) => {
   const { selectedIndex } = useTabsContext()
   const prevSelectedIndex = usePrevious(selectedIndex) || 0
 
@@ -41,7 +41,7 @@ export const useFadeInOutAnimation = (divElem: RefObject<HTMLDivElement>) => {
           panelElem.removeAttribute('closing')
           panelElem.setAttribute('closed', '')
         },
-        { once: true }
+        { once: true },
       )
     } else if (index === selectedIndex) {
       panelElem.setAttribute('opening', '')
@@ -52,7 +52,7 @@ export const useFadeInOutAnimation = (divElem: RefObject<HTMLDivElement>) => {
           panelElem.removeAttribute('opening')
           panelElem.removeAttribute('closed')
         },
-        { once: true }
+        { once: true },
       )
     }
   }, [selectedIndex, prevSelectedIndex, index, divElem])

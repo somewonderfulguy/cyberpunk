@@ -1,44 +1,40 @@
-import { CSSProperties } from "react";
-import type { Decorator } from "@storybook/react";
+import type { CSSProperties } from 'react'
+import type { Decorator } from '@storybook/react-vite'
 
-import classNames from "@repo/shared/utils/classNames";
+import classNames from '@repo/shared/utils/classNames'
 
-import ThemeWrapper from "../../../components/ThemeWrapper";
-import { Theme, ThemeStorybook } from "../../../types/theme";
+import ThemeWrapper from '../../../components/ThemeWrapper'
+import type { Theme, ThemeStorybook } from '../../../types/theme'
 
-import styles from "./ThemeAndLanguage.module.css";
+import styles from './ThemeAndLanguage.module.css'
 
 const getClassNames = (theme: Theme | ThemeStorybook) => {
   switch (theme) {
-    case "yellow":
-      return styles.gridElementYellow;
-    case "darkRed":
-      return styles.gridElementDarkRed;
-    case "dark":
-      return styles.gridElementDark;
+    case 'yellow':
+      return styles.gridElementYellow
+    case 'darkRed':
+      return styles.gridElementDarkRed
+    case 'dark':
+      return styles.gridElementDark
     default:
-      return "";
+      return ''
   }
-};
+}
 
 const ThemeAndLanguage: Decorator = (Story, context) => {
-  const { globals, parameters, viewMode } = context;
-  const isDocs = viewMode === "docs";
-  const multiselect: { [key: string]: string | string[] } = globals.multiselect;
-  const gridElementCss = parameters.gridElementCss as CSSProperties | undefined;
+  const { globals, parameters, viewMode } = context
+  const isDocs = viewMode === 'docs'
+  const multiselect: { [key: string]: string | string[] } = globals.multiselect
+  const gridElementCss = parameters.gridElementCss as CSSProperties | undefined
 
-  const theme = multiselect.theme as Array<Theme>;
+  // const theme = multiselect.theme as Theme[]
   // TODO: const lang = multiselect.lang as Array<'en' | 'pl' | 'ua'>
-  const orientation = multiselect.orientation as "horizontal" | "vertical";
+  const orientation = multiselect.orientation as 'horizontal' | 'vertical'
   // TODO: const priority = globals.priority as 'theme' | 'lang'
-  const themeStorybook = multiselect.themeStorybook as ThemeStorybook;
+  const themeStorybook = multiselect.themeStorybook as ThemeStorybook
 
   return (
-    <div
-      className={
-        orientation === "horizontal" ? styles.grid : styles.gridVertical
-      }
-    >
+    <div className={orientation === 'horizontal' ? styles.grid : styles.gridVertical}>
       {isDocs ? (
         <ThemeWrapper
           overrideTheme={themeStorybook}
@@ -52,7 +48,7 @@ const ThemeAndLanguage: Decorator = (Story, context) => {
           overrideTheme="yellow"
           key="yellow"
           className={classNames(
-            getClassNames("yellow")
+            getClassNames('yellow'),
             // 'yellow' === 'whiteOnBlack' && styles.gridElementWhiteOnBlack
           )}
           style={gridElementCss}
@@ -74,7 +70,7 @@ const ThemeAndLanguage: Decorator = (Story, context) => {
         // ))
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ThemeAndLanguage;
+export default ThemeAndLanguage

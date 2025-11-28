@@ -1,14 +1,9 @@
 'use client'
 
-import { HTMLAttributes, useLayoutEffect } from 'react'
+import { type HTMLAttributes, useLayoutEffect } from 'react'
 
 import classNames from '@repo/shared/utils/classNames'
-import {
-  ThemeStoreProvider,
-  useThemeStore,
-  useThemeDispatch,
-  Theme
-} from '@repo/state/themeStore'
+import { ThemeStoreProvider, useThemeStore, useThemeDispatch, type Theme } from '@repo/state/themeStore'
 
 import './ThemeWrapper.css'
 import styles from './ThemeWrapper.module.css'
@@ -31,10 +26,7 @@ const ThemeWrapperImpl = ({ className, overrideTheme, ...props }: Props) => {
   const theme = overrideTheme ?? themeFromStore
   const updateTheme = useThemeDispatch()
 
-  useLayoutEffect(
-    () => void (overrideTheme && updateTheme(overrideTheme)),
-    [overrideTheme, updateTheme]
-  )
+  useLayoutEffect(() => void (overrideTheme && updateTheme(overrideTheme)), [overrideTheme, updateTheme])
 
   return (
     <div
@@ -44,7 +36,7 @@ const ThemeWrapperImpl = ({ className, overrideTheme, ...props }: Props) => {
         theme === 'darkRed' && 'cyberpunk-ui-theme-dark-red',
         theme === 'dark' && 'cyberpunk-ui-theme-dark',
         theme === 'whiteOnBlack' && 'cyberpunk-ui-theme-white-on-black',
-        className
+        className,
       )}
       {...props}
     />

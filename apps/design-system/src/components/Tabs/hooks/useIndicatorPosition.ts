@@ -1,4 +1,4 @@
-import { RefObject, useLayoutEffect, useRef } from 'react'
+import { type RefObject, useLayoutEffect, useRef } from 'react'
 import { useTabsContext } from '@reach/tabs'
 import { useSpring } from 'react-spring'
 
@@ -9,8 +9,8 @@ import { useIndicatorPositionDispatch } from '../contexts'
 
 export const useIndicatorPosition = (
   tabs: HTMLButtonElement[],
-  refWrapper: RefObject<HTMLDivElement>,
-  containerWidth: number
+  refWrapper: RefObject<HTMLDivElement | null>,
+  containerWidth: number,
 ) => {
   const { selectedIndex } = useTabsContext()
   const prevSelectedIndex = usePrevious(selectedIndex) || 0
@@ -31,31 +31,23 @@ export const useIndicatorPosition = (
   const [indicatorLeft, leftApi] = useSpring(
     () => ({
       from: { left: 0 },
-      to: { left: 0 }
+      to: { left: 0 },
     }),
-    []
+    [],
   )
 
   const [indicatorWidth, widthApi] = useSpring(
     () => ({
       from: { width: 0 },
-      to: { width: 0 }
+      to: { width: 0 },
     }),
-    []
+    [],
   )
 
   useLayoutEffect(() => {
-    if (
-      !(isHexagon || isUnderline) ||
-      !tabs.length ||
-      !refWrapper.current ||
-      !containerWidth
-    )
-      return
+    if (!(isHexagon || isUnderline) || !tabs.length || !refWrapper.current || !containerWidth) return
 
-    const tabListElement = refWrapper.current.querySelector(
-      '[data-reach-tab-list]'
-    ) as HTMLDivElement
+    const tabListElement = refWrapper.current.querySelector('[data-reach-tab-list]') as HTMLDivElement
 
     if (!tabListElement) {
       throw new Error('tabListElement not found')
@@ -70,38 +62,26 @@ export const useIndicatorPosition = (
       const nextTab = tabs[nextIndex] as HTMLButtonElement
       const prevTab = tabs[prevIndex] as HTMLButtonElement
 
-      const { offsetLeft: _newOffsetLeft, offsetWidth: newOffsetWidth } =
-        nextTab
-      const { offsetLeft: _prevOffsetLeft, offsetWidth: prevOffsetWidth } =
-        prevTab
+      const { offsetLeft: _newOffsetLeft, offsetWidth: newOffsetWidth } = nextTab
+      const { offsetLeft: _prevOffsetLeft, offsetWidth: prevOffsetWidth } = prevTab
 
       const newPaddingLeft = parseFloat(getComputedStyle(nextTab).paddingLeft)
       const newPaddingRight = parseFloat(getComputedStyle(nextTab).paddingRight)
       const prevPaddingLeft = parseFloat(getComputedStyle(prevTab).paddingLeft)
-      const prevPaddingRight = parseFloat(
-        getComputedStyle(prevTab).paddingRight
-      )
+      const prevPaddingRight = parseFloat(getComputedStyle(prevTab).paddingRight)
 
-      const newWidth = isUnderline
-        ? newOffsetWidth - newPaddingLeft - newPaddingRight
-        : newOffsetWidth
+      const newWidth = isUnderline ? newOffsetWidth - newPaddingLeft - newPaddingRight : newOffsetWidth
 
-      const newOffsetLeft = isUnderline
-        ? _newOffsetLeft + newPaddingLeft
-        : _newOffsetLeft
+      const newOffsetLeft = isUnderline ? _newOffsetLeft + newPaddingLeft : _newOffsetLeft
 
-      const prevWidth = isUnderline
-        ? prevOffsetWidth - prevPaddingLeft - prevPaddingRight
-        : prevOffsetWidth
+      const prevWidth = isUnderline ? prevOffsetWidth - prevPaddingLeft - prevPaddingRight : prevOffsetWidth
 
-      const prevOffsetLeft = isUnderline
-        ? _prevOffsetLeft + prevPaddingLeft
-        : _prevOffsetLeft
+      const prevOffsetLeft = isUnderline ? _prevOffsetLeft + prevPaddingLeft : _prevOffsetLeft
 
       if (isGoingLeft) {
         leftApi.start({ left: newOffsetLeft })
         widthApi.start({
-          width: prevOffsetLeft + prevWidth - newOffsetLeft
+          width: prevOffsetLeft + prevWidth - newOffsetLeft,
         })
         setTimeout(() => {
           widthApi.start({ width: newWidth })
@@ -111,7 +91,7 @@ export const useIndicatorPosition = (
         }, 200)
       } else {
         widthApi.start({
-          width: newOffsetLeft - prevOffsetLeft + newWidth
+          width: newOffsetLeft - prevOffsetLeft + newWidth,
         })
         setTimeout(() => {
           widthApi.start({ width: newWidth })
@@ -127,17 +107,15 @@ export const useIndicatorPosition = (
       const { offsetLeft, offsetWidth } = selectedTab
 
       const paddingLeft = parseFloat(getComputedStyle(selectedTab).paddingLeft)
-      const paddingRight = parseFloat(
-        getComputedStyle(selectedTab).paddingRight
-      )
+      const paddingRight = parseFloat(getComputedStyle(selectedTab).paddingRight)
 
       leftApi.start({
         immediate: true,
-        left: offsetLeft + (isHexagon ? 0 : paddingLeft)
+        left: offsetLeft + (isHexagon ? 0 : paddingLeft),
       })
       widthApi.start({
         immediate: true,
-        width: offsetWidth - (isHexagon ? 0 : paddingLeft + paddingRight)
+        width: offsetWidth - (isHexagon ? 0 : paddingLeft + paddingRight),
       })
     }
 
@@ -159,47 +137,33 @@ export const useIndicatorPosition = (
       performTransition(prevHoverIndex, _hoverIndex)
       prevHoverIndex = _hoverIndex
     })
-    const mouseLeaveCallbacks = tabs.map(
-      (leaveTab, leaveIndex) => (event: MouseEvent) => {
-        const toElement = event.relatedTarget as HTMLElement
+    const mouseLeaveCallbacks = tabs.map((leaveTab, leaveIndex) => (event: MouseEvent) => {
+      const toElement = event.relatedTarget as HTMLElement
 
-        // check is leaving towards another tab
-        const isSomeTab = tabs.some((tab) => tab.contains(toElement))
+      // check is leaving towards another tab
+      const isSomeTab = tabs.some((tab) => tab.contains(toElement))
 
-        // if leaving all the tabs, reset to active tab
-        if (!isSomeTab) {
-          if (leaveIndex !== selectedIndex && leaveTab !== toElement) {
-            performTransition(leaveIndex, selectedIndex)
-            prevHoverIndex = selectedIndex
-          }
-          hoverIndex.current = -1
+      // if leaving all the tabs, reset to active tab
+      if (!isSomeTab) {
+        if (leaveIndex !== selectedIndex && leaveTab !== toElement) {
+          performTransition(leaveIndex, selectedIndex)
+          prevHoverIndex = selectedIndex
         }
+        hoverIndex.current = -1
       }
-    )
+    })
 
     type Callback = (event: MouseEvent) => void
 
     tabs.forEach((tab, hoverIndex) => {
-      tab.addEventListener(
-        'mouseout',
-        mouseLeaveCallbacks[hoverIndex] as Callback
-      )
-      tab.addEventListener(
-        'mouseover',
-        mouseEnterCallbacks[hoverIndex] as Callback
-      )
+      tab.addEventListener('mouseout', mouseLeaveCallbacks[hoverIndex] as Callback)
+      tab.addEventListener('mouseover', mouseEnterCallbacks[hoverIndex] as Callback)
     })
 
     return () => {
       tabs.forEach((tab, hoverIndex) => {
-        tab.removeEventListener(
-          'mouseout',
-          mouseLeaveCallbacks[hoverIndex] as Callback
-        )
-        tab.removeEventListener(
-          'mouseover',
-          mouseEnterCallbacks[hoverIndex] as Callback
-        )
+        tab.removeEventListener('mouseout', mouseLeaveCallbacks[hoverIndex] as Callback)
+        tab.removeEventListener('mouseover', mouseEnterCallbacks[hoverIndex] as Callback)
       })
     }
   }, [
@@ -215,11 +179,11 @@ export const useIndicatorPosition = (
     leftApi,
     widthApi,
     animateOnHover,
-    dispatchIndicatorPosition
+    dispatchIndicatorPosition,
   ])
 
   return {
     indicatorLeft,
-    indicatorWidth
+    indicatorWidth,
   }
 }

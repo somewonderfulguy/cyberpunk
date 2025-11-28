@@ -1,17 +1,9 @@
-import { forwardRef, HTMLAttributes, useEffect, useRef } from 'react'
-import {
-  Tabs as ReachTabs,
-  TabsProps as ReachTabsProps,
-  TabProps
-} from '@reach/tabs'
+import { forwardRef, type HTMLAttributes, useEffect, useRef } from 'react'
+import { Tabs as ReachTabs, type TabsProps as ReachTabsProps, type TabProps } from '@reach/tabs'
 
 import classNames from '@repo/shared/utils/classNames'
 
-import {
-  TabsInternalProvider,
-  useTabsInternalValue,
-  useTabsInternalDispatch
-} from './contexts'
+import { TabsInternalProvider, useTabsInternalValue, useTabsInternalDispatch } from './contexts'
 import TabList from './TabList'
 import Tab from './Tab'
 import TabPanels from './TabPanels'
@@ -45,12 +37,7 @@ import stylesVertical from './styles/TabsVertical.module.css'
 // TODO: render empty space for scrollbar (Chrome, Vertical tabs story in docs view)
 // TODO: reduce file size - move logic to separate hooks
 
-export type TabsStyle =
-  | 'folder'
-  | 'hexagon'
-  | 'shaped'
-  | 'underline'
-  | 'vertical'
+export type TabsStyle = 'folder' | 'hexagon' | 'shaped' | 'underline' | 'vertical'
 
 // Directly extend ReachTabsProps and HTMLAttributes<HTMLDivElement> with a conditional prop structure.
 type TabsProps = ReachTabsProps &
@@ -68,8 +55,7 @@ type TabsProps = ReachTabsProps &
       }
   )
 
-const getDirection = (element: Element) =>
-  window.getComputedStyle(element).getPropertyValue('direction')
+const getDirection = (element: Element) => window.getComputedStyle(element).getPropertyValue('direction')
 
 const DirectionDetector = () => {
   const dispatch = useTabsInternalDispatch()
@@ -83,12 +69,8 @@ const DirectionDetector = () => {
   return <div ref={ref} aria-hidden />
 }
 
-const isWithAnimateOnHoverTabsProps = (
-  props: TabsProps
-): props is TabsProps & { animateOnHover?: boolean } =>
-  props.type === undefined ||
-  props.type === 'underline' ||
-  props.type === 'hexagon'
+const isWithAnimateOnHoverTabsProps = (props: TabsProps): props is TabsProps & { animateOnHover?: boolean } =>
+  props.type === undefined || props.type === 'underline' || props.type === 'hexagon'
 
 const TabsWrapper = forwardRef<HTMLDivElement, TabsProps>((props, ref) => (
   <TabsInternalProvider>
@@ -98,9 +80,7 @@ const TabsWrapper = forwardRef<HTMLDivElement, TabsProps>((props, ref) => (
 TabsWrapper.displayName = 'TabsContextWrapper'
 
 const Tabs = forwardRef<HTMLDivElement, TabsProps>((props, ref) => {
-  const animateOnHover = isWithAnimateOnHoverTabsProps(props)
-    ? props.animateOnHover ?? false
-    : false
+  const animateOnHover = isWithAnimateOnHoverTabsProps(props) ? props.animateOnHover ?? false : false
 
   const dispatch = useTabsInternalDispatch()
 
@@ -119,13 +99,10 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>((props, ref) => {
       className={classNames(
         className,
         type === 'folder' && stylesFolder.folder,
-        type === 'hexagon' &&
-          (animateOnHover
-            ? stylesHexagon.hexagon
-            : stylesHexagon.hexagonStatic),
+        type === 'hexagon' && (animateOnHover ? stylesHexagon.hexagon : stylesHexagon.hexagonStatic),
         type === 'shaped' && stylesShaped.shaped,
         type === 'underline' && stylesUnderline.underline,
-        type === 'vertical' && stylesVertical.vertical
+        type === 'vertical' && stylesVertical.vertical,
       )}
       ref={ref}
     >
