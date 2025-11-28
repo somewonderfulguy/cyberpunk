@@ -1,1 +1,1 @@
-export { default } from './PlayerApp'
+export * from './PlayerApp'
