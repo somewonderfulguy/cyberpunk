@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   useRef,
@@ -6,8 +6,9 @@ import {
   useContext,
   useCallback,
   useSyncExternalStore,
-  ReactNode
-} from 'react'
+  ReactNode,
+  useMemo,
+} from "react";
 
 // TODO: Add SSR support
 // TODO: improve JSDoc
@@ -28,108 +29,122 @@ import {
  *
  * @returns {ReturnValue} object with Provider, useStoreValue and useStoreDispatch
  * */
-const createContextStore = <TStore,>(
+export function createContextStore<TStore>(
   initialState: TStore,
   displayName?: string
-) => {
-  type PrevStateFnUpdate = (prevValue: TStore) => TStore
-  const useStoreData = (): {
-    get: () => TStore
-    set: (value: Partial<TStore> | PrevStateFnUpdate) => void
-    subscribe: (callback: () => void) => () => void
+) {
+  type PrevStateFnUpdate = (prevValue: TStore) => TStore;
+  const useStoreData = (
+    init: TStore
+  ): {
+    get: () => TStore;
+    set: (value: Partial<TStore> | PrevStateFnUpdate) => void;
+    subscribe: (callback: () => void) => () => void;
   } => {
-    const store = useRef(initialState)
+    const store = useRef(init);
 
-    const get = useCallback(() => store.current, [])
+    const subscribers = useRef(new Set<() => void>());
 
-    const subscribers = useRef(new Set<() => void>())
+    const get = useCallback(() => store.current, []);
 
     const set = useCallback((value: Partial<TStore> | PrevStateFnUpdate) => {
-      if (typeof value === 'function') {
-        store.current = value(store.current)
-      } else if (typeof value !== 'object') {
-        store.current = value as TStore
+      if (typeof value === "function") {
+        store.current = value(store.current);
+      } else if (typeof value !== "object") {
+        store.current = value as TStore;
       } else {
-        store.current = { ...store.current, ...value }
+        store.current = { ...store.current, ...value };
       }
-      subscribers.current.forEach((callback) => callback())
-    }, [])
+      subscribers.current.forEach((callback) => callback());
+    }, []);
 
     const subscribe = useCallback((callback: () => void) => {
-      subscribers.current.add(callback)
-      return () => subscribers.current.delete(callback)
-    }, [])
+      subscribers.current.add(callback);
+      return () => subscribers.current.delete(callback);
+    }, []);
 
     return {
       get,
       set,
-      subscribe
-    }
-  }
+      subscribe,
+    };
+  };
 
-  type UseStoreDataReturnType = ReturnType<typeof useStoreData>
+  type UseStoreDataReturnType = ReturnType<typeof useStoreData>;
 
   const StoreValueContext = createContext<
-    Omit<UseStoreDataReturnType, 'set'> | undefined
-  >(undefined)
+    Omit<UseStoreDataReturnType, "set"> | undefined
+  >(undefined);
   const StoreDispatchContext = createContext<
-    UseStoreDataReturnType['set'] | undefined
-  >(undefined)
+    UseStoreDataReturnType["set"] | undefined
+  >(undefined);
 
-  const Provider = ({ children }: { children: ReactNode }) => {
-    const { get, set, subscribe } = useStoreData()
+  const Provider = ({
+    children,
+    initial,
+  }: {
+    children: ReactNode;
+    /** Per-instance dynamic defaults (e.g., from URL) merged with base initialState */
+    initial?: Partial<TStore>;
+  }) => {
+    const initRef = useRef<TStore>(
+      initial ? { ...initialState, ...initial } : initialState
+    );
+    const { get, set, subscribe } = useStoreData(initRef.current);
     return (
       <StoreDispatchContext.Provider value={set}>
-        <StoreValueContext.Provider value={{ get, subscribe }}>
+        <StoreValueContext.Provider
+          value={useMemo(() => ({ get, subscribe }), [get, subscribe])}
+        >
           {children}
         </StoreValueContext.Provider>
       </StoreDispatchContext.Provider>
-    )
-  }
-  if (displayName) Provider.displayName = displayName
+    );
+  };
+  if (displayName) Provider.displayName = displayName;
 
-  const useStoreValue = <SelectorOutput,>(
-    selector: (store: TStore) => SelectorOutput
-  ): SelectorOutput => {
-    const store = useContext(StoreValueContext)
+  function useStoreValue(): TStore;
+  function useStoreValue<TSelectorOutput>(
+    selector: (store: TStore) => TSelectorOutput,
+    ssrSelector?: (store: TStore) => TSelectorOutput
+  ): TSelectorOutput;
+  function useStoreValue<TSelectorOutput = TStore>(
+    selector?: (store: TStore) => TSelectorOutput,
+    ssrSelector?: (store: TStore) => TSelectorOutput
+  ): TSelectorOutput | TStore {
+    const store = useContext(StoreValueContext);
+
     if (store === undefined) {
       throw new Error(
-        'useStoreValue must be used inside a Provider with a value'
-      )
+        `useStoreValue must be used inside a ${displayName ?? "Provider"}`
+      );
     }
+
+    const getSnapshot = () => {
+      const currentStore = store.get();
+      return selector ? selector(currentStore) : currentStore;
+    };
 
     return useSyncExternalStore(
       store.subscribe,
-      () => selector(store.get()),
-      () => selector(initialState)
-    )
+      getSnapshot,
+      ssrSelector ? () => ssrSelector(store.get()) : undefined
+    );
   }
 
-  /**
-   * @returns {function} function that updates the store function accepts either partial store (e.g. `{ someValue: 'new value' }`) or function that accepts previous store value and returns new store value (e.g. `(prevStore) => ({ ...prevStore, someValue: 'new value' }`)
-   */
   const useStoreDispatch = () => {
-    const set = useContext(StoreDispatchContext)
+    const set = useContext(StoreDispatchContext);
     if (set === undefined) {
       throw new Error(
-        'useStoreDispatch must be used inside a Provider with a value'
-      )
+        `useStoreDispatch must be used inside a ${displayName ?? "Provider"}`
+      );
     }
-    return set
-  }
+    return set;
+  };
 
   return {
-    /** Description */
     Provider,
-    /**
-     * @param {function} selector - function that selects the part of the store, e.g. `(store) => store.someValue`
-     * @returns {*} selected part of the store
-     */
     useStoreValue,
     useStoreDispatch,
-    StoreValueContext,
-    StoreDispatchContext
-  }
+  };
 }
-
-export default createContextStore

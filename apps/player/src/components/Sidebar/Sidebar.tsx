@@ -1,61 +1,59 @@
-"use client";
+'use client'
 
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from 'react'
 
-import {
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-} from "@repo/design-system/Tabs";
-import useResizeObserver from "@repo/shared/hooks/useResizeObserver";
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@repo/design-system/Tabs'
+import useResizeObserver from '@repo/shared/hooks/useResizeObserver'
 
-import styles from "./Sidebar.module.css";
+import { usePlayerControls, usePlayerValue } from '../../stores/playerStore'
+
+import styles from './Sidebar.module.css'
 
 type Song = {
-  id: string;
-  name: string;
-  artist: string;
-  album: string;
-  year: number;
-  durationInSeconds: number;
-  explicit: boolean;
-  url: string;
-};
+  id: string
+  name: string
+  artist: string
+  album: string
+  year: number
+  durationInSeconds: number
+  explicit: boolean
+  url: string
+}
 
 const Sidebar = () => {
-  const [tabListHeight, setTabListHeight] = useState(0);
-  const tabListRef = useResizeObserver((bounds) =>
-    setTabListHeight(bounds.height)
-  );
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [tabListHeight, setTabListHeight] = useState(0)
+  const tabListRef = useResizeObserver((bounds) => setTabListHeight(bounds.height))
+  const [songs, setSongs] = useState<Song[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { setPlaylist, playIndex } = usePlayerControls()
+  const currentIndex = usePlayerValue((s) => s.currentIndex)
 
   useEffect(() => {
-    let cancelled = false;
+    let cancelled = false
     const fetchSongs = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        const res = await fetch("http://localhost:7070/songs");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = (await res.json()) as Song[];
-        if (!cancelled) setSongs(data);
+        setLoading(true)
+        setError(null)
+        const res = await fetch('http://localhost:7070/songs')
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const data = (await res.json()) as Song[]
+        if (!cancelled) {
+          setSongs(data)
+          setPlaylist(data)
+        }
       } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : "Failed to load songs";
-        if (!cancelled) setError(message);
+        const message = e instanceof Error ? e.message : 'Failed to load songs'
+        if (!cancelled) setError(message)
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setLoading(false)
       }
-    };
-    fetchSongs();
+    }
+    fetchSongs()
     return () => {
-      cancelled = true;
-    };
-  }, []);
+      cancelled = true
+    }
+  }, [setPlaylist])
 
   return (
     <div className={styles.sidebar}>
@@ -67,40 +65,32 @@ const Sidebar = () => {
         <TabPanels
           className={styles.tabPanels}
           disableHeightAnimation
-          style={
-            { "--_tab-list-height": tabListHeight + "px" } as CSSProperties
-          }
+          style={{ '--_tab-list-height': tabListHeight + 'px' } as CSSProperties}
         >
           <TabPanel className={styles.tabPanel}>
             {loading && <div>Loading…</div>}
-            {error && (
-              <div style={{ color: "var(--error, #f55)" }}>Error: {error}</div>
-            )}
+            {error && <div style={{ color: 'var(--error, #f55)' }}>Error: {error}</div>}
             {!loading && !error && (
-              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                {songs.map((s) => (
-                  <li
-                    key={s.id}
-                    className={styles.songItem}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      if (audio) {
-                        audio.pause();
-                      }
-                      const a = new Audio(`http://localhost:7070${s.url}`);
-                      a.play().catch(() => {
-                        // ignore play errors for now
-                      });
-                      setAudio(a);
-                    }}
-                  >
-                    <div style={{ fontWeight: 600 }}>{s.name}</div>
-                    <div style={{ opacity: 0.75, fontSize: "0.9em" }}>
-                      {s.artist} • {s.album} • {s.year}
-                    </div>
-                  </li>
-                ))}
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                {songs.map((s, index) => {
+                  const isActive = currentIndex === index
+                  return (
+                    <li
+                      key={s.id}
+                      className={`${styles.songItem} ${isActive ? styles.active : ''}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        playIndex(index)
+                      }}
+                    >
+                      <div style={{ fontWeight: 600 }}>{s.name}</div>
+                      <div style={{ opacity: 0.75, fontSize: '0.9em' }}>
+                        {s.artist} • {s.album} • {s.year}
+                      </div>
+                    </li>
+                  )
+                })}
               </ul>
             )}
           </TabPanel>
@@ -110,7 +100,7 @@ const Sidebar = () => {
         </TabPanels>
       </Tabs>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

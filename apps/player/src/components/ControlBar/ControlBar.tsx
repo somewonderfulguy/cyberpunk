@@ -1,6 +1,8 @@
 import Button from '@repo/design-system/controls/Button'
 import ThemeWrapper from '@repo/design-system/ThemeWrapper'
 
+import { usePlayerControls, usePlayerValue } from '../../stores/playerStore'
+
 import SongInfo from './SongInfo'
 import TimeSlider from './TimeSlider'
 import SoundControl from './SoundControl'
@@ -11,17 +13,14 @@ import styles from './ControlBar.module.css'
 import graffiti from './assets/graffiti.png'
 import sprayTopRight from './assets/sprayTopRight.png'
 import sprayBottomLeak from './assets/sprayBottomLeak2.png'
-import {
-  PreviousIcon,
-  RepeatIcon,
-  ShuffleIcon,
-  TrianglePointsToRightIcon as PlayIcon
-} from './assets/controlBarIcons'
+import { PreviousIcon, RepeatIcon, ShuffleIcon, TrianglePointsToRightIcon as PlayIcon } from './assets/controlBarIcons'
 
-const getImgUrl = (img: unknown) =>
-  typeof img === 'string' ? img : (img as { src: string })?.src
+const getImgUrl = (img: unknown) => (typeof img === 'string' ? img : (img as { src: string })?.src)
 
 const ControlBar = () => {
+  const { togglePlay, next, prev } = usePlayerControls()
+  const isPlaying = usePlayerValue((s) => s.isPlaying)
+
   return (
     <ThemeWrapper overrideTheme="whiteOnBlack">
       <div className={styles.controlBarWrapper}>
@@ -45,10 +44,7 @@ const ControlBar = () => {
             <TimeSlider />
           </div>
           <TimeCount className={styles.time} />
-          <div
-            className={styles.controlBar}
-            data-augmented-ui="bl-clip-x tr-clip tl-clip"
-          >
+          <div className={styles.controlBar} data-augmented-ui="bl-clip-x tr-clip tl-clip">
             <div>
               <SongInfo />
             </div>
@@ -56,21 +52,13 @@ const ControlBar = () => {
               <button type="button" className={styles.shuffleButton}>
                 <ShuffleIcon />
               </button>
-              <Button
-                cutBottomLeftCorner
-                className={styles.prevBtn}
-                buttonSize="small"
-              >
+              <Button cutBottomLeftCorner className={styles.prevBtn} buttonSize="small" onClick={prev}>
                 <PreviousIcon />
               </Button>
-              <Button cutBottomLeftCorner className={styles.playBtn}>
+              <Button cutBottomLeftCorner className={styles.playBtn} aria-pressed={isPlaying} onClick={togglePlay}>
                 <PlayIcon />
               </Button>
-              <Button
-                cutBottomRightCorner
-                className={styles.nextButton}
-                buttonSize="small"
-              >
+              <Button cutBottomRightCorner className={styles.nextButton} buttonSize="small" onClick={next}>
                 <PreviousIcon />
               </Button>
               {/* aria-pressed={state !== 0}

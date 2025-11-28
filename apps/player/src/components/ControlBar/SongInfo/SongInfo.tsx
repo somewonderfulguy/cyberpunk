@@ -1,7 +1,11 @@
+import { usePlayerValue } from '../../../stores/playerStore'
+
 import styles from './SongInfo.module.css'
 import preview from './assets/preview.jpg'
 
 const SongInfo = () => {
+  const current = usePlayerValue((s) => (s.currentIndex == null ? null : s.playlist[s.currentIndex]))
+
   return (
     <div className={styles.container}>
       <div className={styles.imageContainer}>
@@ -13,11 +17,12 @@ const SongInfo = () => {
         />
       </div>
       <div className="song-info__text">
-        <h2 className={styles.name}>Night City</h2>
-        <p className="song-info__artist">
-          R E L and Artemis Delta • Cyberpunk 2077
-          {/* : Radio, Vol. 3 (Original Soundtrack) • 2020 */}
-        </p>
+        <h2 className={styles.name}>{current?.name ?? 'Select a song'}</h2>
+        {current && (
+          <p className="song-info__artist">
+            {current.artist} • {current.album} • {current.year}
+          </p>
+        )}
       </div>
     </div>
   )
