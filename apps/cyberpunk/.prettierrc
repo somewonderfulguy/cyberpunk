@@ -4,5 +4,5 @@
   "tabWidth": 2,
   "printWidth": 120,
   "jsxSingleQuote": false,
-  "trailingComma": "none"
+  "trailingComma": "all"
 }

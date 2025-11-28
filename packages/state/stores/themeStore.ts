@@ -1,12 +1,12 @@
-import createContextStore from '@repo/shared/utils/createContextStore'
+import { createContextStore } from "@repo/shared/utils/createContextStore";
 
-export type Theme = 'yellow' | 'darkRed' | 'dark' | 'whiteOnBlack'
+export type Theme = "yellow" | "darkRed" | "dark" | "whiteOnBlack";
 
-const result = createContextStore<Theme>('yellow', 'ThemeStoreProvider')
+const result = createContextStore<Theme>("yellow", "ThemeStoreProvider");
 const {
   Provider: ThemeStoreProvider,
   useStoreValue: useThemeStore,
-  useStoreDispatch: useThemeDispatch
-} = result
+  useStoreDispatch: useThemeDispatch,
+} = result;
 
-export { ThemeStoreProvider, useThemeStore, useThemeDispatch }
+export { ThemeStoreProvider, useThemeStore, useThemeDispatch };
