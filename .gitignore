@@ -15,3 +15,7 @@ storybook-static
 
 # testing
 coverage
+
+# mixed
+apps/backend/src/music/
+apps/crypto/src/app/wallets.ts
