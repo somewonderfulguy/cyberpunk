@@ -11,6 +11,7 @@
     "./utils/*": "./utils/classNames.ts",
     "./utils/createContextStore": "./utils/createContextStore.tsx",
     "./utils/debounce": "./utils/debounce.ts",
+    "./utils/mergeRefs": "./utils/mergeRefs.ts",
     "./utils/request": "./utils/request.ts",
     "./utils/throttle": "./utils/throttle.ts"
   },

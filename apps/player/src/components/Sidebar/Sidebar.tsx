@@ -1,8 +1,8 @@
 'use client'
 
-import { CSSProperties, useEffect, useState } from 'react'
+import { type CSSProperties, useEffect, useState } from 'react'
 
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@repo/design-system/Tabs'
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@repo/design-system/Tabs-old'
 import useResizeObserver from '@repo/shared/hooks/useResizeObserver'
 
 import { usePlayerControls, usePlayerValue } from '../../stores/playerStore'

@@ -9,6 +9,7 @@
     "./assets/*": "./src/assets/*",
     "./controls/Button": "./src/components/controls/Button/index.ts",
     "./Tabs": "./src/components/Tabs/Tabs.tsx",
+    "./Tabs-old": "./src/components/Tabs-old/Tabs.tsx",
     "./ThemeWrapper": "./src/components/ThemeWrapper/ThemeWrapper.tsx",
     "./styles/*": "./src/styles/*",
     "./.storybook/*": "./.storybook/*"
@@ -23,6 +24,7 @@
     "serve-storybook": "npx http-server storybook-static"
   },
   "dependencies": {
+    "@radix-ui/react-tabs": "^1.1.13",
     "@reach/tabs": "^0.18.0",
     "@repo/shared": "workspace:*",
     "react-spring": "^9.7.3"
@@ -33,9 +35,6 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "augmented-ui": "^2.0.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
     "@eslint/js": "^9.39.1",
     "@repo/state": "workspace:*",
     "@repo/typescript": "workspace:*",
@@ -45,11 +44,14 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.2.2",
+    "augmented-ui": "^2.0.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "eslint-plugin-storybook": "^10.1.0",
     "globals": "^16.5.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "storybook": "^10.1.0",
     "storybook-addon-multiselect": "^2.0.1",
     "typescript": "~5.9.3",

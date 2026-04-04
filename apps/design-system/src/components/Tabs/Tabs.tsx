@@ -1,132 +1,109 @@
-import { forwardRef, type HTMLAttributes, useEffect, useRef } from 'react'
-import { Tabs as ReachTabs, type TabsProps as ReachTabsProps, type TabProps } from '@reach/tabs'
+import { Root, Trigger, Content, type TabsProps as TabsPropsRadix } from '@radix-ui/react-tabs'
+import { useCallback, useLayoutEffect, useRef, type ComponentProps } from 'react'
 
-import classNames from '@repo/shared/utils/classNames'
+import { mergeRefs } from '@repo/shared/utils/mergeRefs'
 
-import { TabsInternalProvider, useTabsInternalValue, useTabsInternalDispatch } from './contexts'
-import TabList from './TabList'
-import Tab from './Tab'
-import TabPanels from './TabPanels'
-import TabPanel from './TabPanel'
+import {
+  initialState,
+  type TabsContextState,
+  TabsProvider,
+  useTabsValue,
+  useTabsDispatch,
+} from './hooks'
+import { DATA_VALUE_KEY } from './constants'
+import { TabList } from './TabsList'
 
-import stylesFolder from './styles/TabsFolder.module.css'
-import stylesHexagon from './styles/TabsHexagon.module.css'
-import stylesShaped from './styles/TabsShaped.module.css'
-import stylesUnderline from './styles/TabsUnderline.module.css'
-import stylesVertical from './styles/TabsVertical.module.css'
+type TabsProps = TabsPropsRadix & ComponentProps<'div'>
 
-// horizontal 2, hexagon line
-//   + drop down variant (later)
-// horizontal 3, folder tabs
-// horizontal 4, very shaped
+export const Tabs = ({
+  initial,
+  defaultValue,
+  value,
+  ...props
+}: TabsProps & { initial?: Partial<TabsContextState> }) => (
+  <TabsProvider
+    initial={{
+      ...initialState,
+      ...initial,
+      value: value ?? defaultValue ?? initial?.value ?? initialState.value,
+    }}
+  >
+    <TabsInner value={value} defaultValue={defaultValue} {...props} />
+  </TabsProvider>
+)
 
-// resize screen test
-// rtl test (and dynamic change)
-// keyboard navigation test
-// disabled tab
+const TabsInner = ({ value: propValue, defaultValue, onValueChange, ref, ...props }: TabsProps) => {
+  const value = useTabsValue((s) => s.value)
+  const selectedIndex = useTabsValue((s) => s.selectedIndex)
+  const dispatch = useTabsDispatch()
 
-// animation content (fade in/out; height change)
-// dnd tab (reorder; horizontal/vertical)
+  const rootRef = useRef<HTMLDivElement>(null)
 
-// FIXME: hexagon - text color of active tab on initialization
-// TODO: test render props api
-// TODO: go through each css file and make sure variables are user correctly
-// TODO: add .cyberpunk-ui-theme-white-on-black on Tabs root component and prop to change it
-// TODO: create story with dynamic tabs (add/remove/rename) to test that animation logic does not break
-// TODO: create story with drag and drop tabs to test that animation logic does not break
-// TODO: render empty space for scrollbar (Chrome, Vertical tabs story in docs view)
-// TODO: reduce file size - move logic to separate hooks
-
-export type TabsStyle = 'folder' | 'hexagon' | 'shaped' | 'underline' | 'vertical'
-
-// Directly extend ReachTabsProps and HTMLAttributes<HTMLDivElement> with a conditional prop structure.
-type TabsProps = ReachTabsProps &
-  HTMLAttributes<HTMLDivElement> &
-  (
-    | {
-        /** Tabs visual style */
-        type: 'underline' | 'hexagon'
-        /** Animation type: click or hover */
-        animateOnHover?: boolean
-      }
-    | {
-        /** Tabs visual style */
-        type?: Exclude<TabsStyle, 'underline' | 'hexagon'>
-      }
+  const getTabs = useCallback(
+    () => Array.from(rootRef.current?.querySelectorAll('[role="tablist"] [role="tab"]') ?? []),
+    [],
   )
 
-const getDirection = (element: Element) => window.getComputedStyle(element).getPropertyValue('direction')
+  // setup value if user not specified one
+  useLayoutEffect(() => {
+    // exit early if value exist
+    if (typeof value !== 'undefined') return
 
-const DirectionDetector = () => {
-  const dispatch = useTabsInternalDispatch()
-  const ref = useRef<HTMLDivElement>(null)
+    const tabs = getTabs()
 
-  const direction = ref.current && getDirection(ref.current as Element)
-  useEffect(() => {
-    dispatch({ isRtl: direction === 'rtl' })
-  }, [direction, dispatch])
+    // take `propValue` or `defaultValue` if present
+    if (propValue || defaultValue) {
+      const newValue = propValue ?? defaultValue
+      const newIndex = tabs.findIndex((tab) => tab.getAttribute(DATA_VALUE_KEY) === newValue)
+      return dispatch({ value: newValue, selectedIndex: newIndex })
+    }
 
-  return <div ref={ref} aria-hidden />
-}
+    // take first tab value if present
+    const dataValue = tabs[0]?.getAttribute(DATA_VALUE_KEY)
+    if (dataValue) dispatch({ value: dataValue, selectedIndex: 0 })
+  }, [value, propValue, defaultValue, dispatch, getTabs])
 
-const isWithAnimateOnHoverTabsProps = (props: TabsProps): props is TabsProps & { animateOnHover?: boolean } =>
-  props.type === undefined || props.type === 'underline' || props.type === 'hexagon'
-
-const TabsWrapper = forwardRef<HTMLDivElement, TabsProps>((props, ref) => (
-  <TabsInternalProvider>
-    <Tabs {...props} ref={ref} />
-  </TabsInternalProvider>
-))
-TabsWrapper.displayName = 'TabsContextWrapper'
-
-const Tabs = forwardRef<HTMLDivElement, TabsProps>((props, ref) => {
-  const animateOnHover = isWithAnimateOnHoverTabsProps(props) ? props.animateOnHover ?? false : false
-
-  const dispatch = useTabsInternalDispatch()
-
-  const { type, children, className, ...restProps } = props
-
-  useEffect(() => dispatch({ type }), [dispatch, type])
-  useEffect(() => dispatch({ animateOnHover }), [dispatch, animateOnHover])
-
-  const isRtl = useTabsInternalValue((state) => state.isRtl)
+  // set selectedIndex on init...
 
   return (
-    <ReachTabs
-      {...(isRtl && { dir: 'rtl' })}
-      {...(type === 'vertical' && { orientation: 'vertical' })}
-      {...restProps}
-      className={classNames(
-        className,
-        type === 'folder' && stylesFolder.folder,
-        type === 'hexagon' && (animateOnHover ? stylesHexagon.hexagon : stylesHexagon.hexagonStatic),
-        type === 'shaped' && stylesShaped.shaped,
-        type === 'underline' && stylesUnderline.underline,
-        type === 'vertical' && stylesVertical.vertical,
-      )}
-      ref={ref}
-    >
-      {children}
-      <DirectionDetector />
-    </ReachTabs>
+    <>
+      propValue: {propValue}
+      <br />
+      defaultValue: {defaultValue}
+      <br />
+      value: {value}
+      <br />
+      selectedIndex: {selectedIndex}
+      <hr style={{ margin: '20px 0' }} />
+      <Root
+        ref={mergeRefs(rootRef, ref)}
+        defaultValue={defaultValue}
+        value={propValue}
+        onValueChange={(newValue) => {
+          onValueChange?.(newValue)
+          if (propValue) return
+          const newIndex = getTabs().findIndex(
+            (tab) => tab.getAttribute(DATA_VALUE_KEY) === newValue,
+          )
+          dispatch({ value: newValue, selectedIndex: newIndex })
+        }}
+        {...props}
+      >
+        <TabList>
+          <Trigger value="tab1" {...{ [DATA_VALUE_KEY]: 'tab1' }}>
+            One
+          </Trigger>
+          <Trigger value="tab2" {...{ [DATA_VALUE_KEY]: 'tab2' }}>
+            Two
+          </Trigger>
+          <Trigger value="tab3" {...{ [DATA_VALUE_KEY]: 'tab3' }}>
+            Three
+          </Trigger>
+        </TabList>
+        <Content value="tab1">Tab one content</Content>
+        <Content value="tab2">Tab two content</Content>
+        <Content value="tab3">Tab three content</Content>
+      </Root>
+    </>
   )
-})
-Tabs.displayName = 'TabsWrapper'
-
-const TypedTabs = TabsWrapper as typeof TabsWrapper & {
-  TabList: typeof TabList
-  Tab: typeof Tab
-  TabPanels: typeof TabPanels
-  TabPanel: typeof TabPanel
 }
-
-TypedTabs.TabList = TabList
-TypedTabs.Tab = Tab
-TypedTabs.TabPanels = TabPanels
-TypedTabs.TabPanel = TabPanel
-
-export default TypedTabs
-// eslint-disable-next-line react-refresh/only-export-components
-export * from '@reach/tabs'
-export type { TabsProps, TabProps }
-export { TypedTabs as Tabs, TabList, Tab, TabPanel, TabPanels }
