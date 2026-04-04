@@ -1,5 +1,5 @@
 {
-  "name": "@repo/backend",
+  "name": "@repo/player-api",
   "version": "0.0.0",
   "private": true,
   "type": "module",

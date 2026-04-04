@@ -1,5 +1,5 @@
 {
-  "name": "@repo/player",
+  "name": "@repo/player-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
