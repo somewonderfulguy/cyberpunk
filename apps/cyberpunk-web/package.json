@@ -14,9 +14,8 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@repo/crypto": "workspace:*",
     "@repo/design-system": "workspace:*",
-    "@repo/player": "workspace:*",
+    "@repo/player-web": "workspace:*",
     "@repo/shared": "workspace:*",
     "@repo/state": "workspace:*",
     "@tanstack/react-query": "^5.52.1",
