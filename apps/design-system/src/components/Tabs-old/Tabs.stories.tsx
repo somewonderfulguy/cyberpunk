@@ -44,20 +44,20 @@ const childrenSampleOne = (
     <TabPanels style={{ marginTop: 30 }}>
       <TabPanel>Videos tab content.</TabPanel>
       <TabPanel>
-        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
-        content.
+        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
+        content. Wallpapers tab content.
         <br />
-        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
-        content.
+        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
+        content. Wallpapers tab content.
         <br />
-        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
-        content.
+        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
+        content. Wallpapers tab content.
         <br />
-        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
-        content.
+        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
+        content. Wallpapers tab content.
         <br />
-        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
-        content.
+        Wallpapers tab content. Wallpapers tab content. Wallpapers tab content. Wallpapers tab
+        content. Wallpapers tab content.
       </TabPanel>
       <TabPanel>Screenshots tab content</TabPanel>
       <TabPanel>V is the main character.</TabPanel>
@@ -85,8 +85,9 @@ const childrenSampleTwo = (
         Edgerunners tab content
       </TabPanel>
       <TabPanel>
-        V is the main character. <br /> V is the main character. <br />V is the main character. <br /> V is the main
-        character. <br /> V is the main character. <br /> V is the main character.
+        V is the main character. <br /> V is the main character. <br />V is the main character.{' '}
+        <br /> V is the main character. <br /> V is the main character. <br /> V is the main
+        character.
       </TabPanel>
       <TabPanel>
         Music tab content <br /> Music tab content
@@ -154,12 +155,13 @@ export const FolderTabs: Story = {
   } as never,
 }
 
-export const ShapedTabs: Story = {
-  args: {
-    type: 'shaped',
-    children: childrenSampleOne,
-  } as never,
-}
+// TODO: implement shaped tabs
+// export const ShapedTabs: Story = {
+//   args: {
+//     type: 'shaped',
+//     children: childrenSampleOne,
+//   } as never,
+// }
 
 export const VerticalTabs: Story = {
   args: {
@@ -173,26 +175,28 @@ export const VerticalTabs: Story = {
         </TabList>
         <TabPanels style={{ marginLeft: 30, maxWidth: 600 }}>
           <TabPanel>
-            Enter the shadowy world of spycraft and become a government secret agent — infiltrate high-security
-            buildings, take out enemies, and go toe-to-toe against seasoned professionals. Espionage is a high-risk
-            game, and failure isn&#8217;t an option. Choose your allies with care as you unravel the secrets at the
-            heart of this expansion.
+            Enter the shadowy world of spycraft and become a government secret agent — infiltrate
+            high-security buildings, take out enemies, and go toe-to-toe against seasoned
+            professionals. Espionage is a high-risk game, and failure isn&#8217;t an option. Choose
+            your allies with care as you unravel the secrets at the heart of this expansion.
           </TabPanel>
           <TabPanel>
-            Watch your back in Dogtown, a dilapidated urban labyrinth nestled within the sprawling metropolis of Night
-            City, now under the iron grip of a trigger-happy militia. This city-within-a-city, with its decaying facades
-            and anarchic streets, presents a stark contrast to the neon-drenched skyline of Night City. Every corner and
-            shadowed alleyway of Dogtown teems with danger and decay, yet for the brave or the desperate, it is a
-            treasure trove of secrets waiting to be unearthed. Its crumbling structures and deserted avenues hold untold
-            stories and opportunities that beckon to those daring enough to navigate its perils. Within its walls,
-            adrenaline-fueled gigs and high-stakes quests await, offering rewards that could tip the balance in the
-            power-hungry world of Cyberpunk 2077. Engage in heart-stopping encounters and navigate treacherous
-            alliances, all while trying to carve out a slice of power in the chaos that is Dogtown.
+            Watch your back in Dogtown, a dilapidated urban labyrinth nestled within the sprawling
+            metropolis of Night City, now under the iron grip of a trigger-happy militia. This
+            city-within-a-city, with its decaying facades and anarchic streets, presents a stark
+            contrast to the neon-drenched skyline of Night City. Every corner and shadowed alleyway
+            of Dogtown teems with danger and decay, yet for the brave or the desperate, it is a
+            treasure trove of secrets waiting to be unearthed. Its crumbling structures and deserted
+            avenues hold untold stories and opportunities that beckon to those daring enough to
+            navigate its perils. Within its walls, adrenaline-fueled gigs and high-stakes quests
+            await, offering rewards that could tip the balance in the power-hungry world of
+            Cyberpunk 2077. Engage in heart-stopping encounters and navigate treacherous alliances,
+            all while trying to carve out a slice of power in the chaos that is Dogtown.
           </TabPanel>
           <TabPanel>
-            Power up with a new skill tree and craft a unique playstyle — use every new weapon and piece of cyberware at
-            your disposal to survive in a fractured world of desperate hustlers, cunning netrunners, and ruthless
-            mercenaries bent on profit and power.
+            Power up with a new skill tree and craft a unique playstyle — use every new weapon and
+            piece of cyberware at your disposal to survive in a fractured world of desperate
+            hustlers, cunning netrunners, and ruthless mercenaries bent on profit and power.
           </TabPanel>
         </TabPanels>
       </>
@@ -200,10 +204,11 @@ export const VerticalTabs: Story = {
   } as never,
 }
 
+// TODO: Implement Kitchen Sink
 /** Everything's dynamic with drag & droppable tabs (for reordering). */
-export const KitchenSink: Story = {
-  args: {
-    type: 'underline',
-    children: childrenSampleOne,
-  } as never,
-}
+// export const KitchenSink: Story = {
+//   args: {
+//     type: 'underline',
+//     children: childrenSampleOne,
+//   } as never,
+// }
