@@ -214,10 +214,10 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      disable: true,
       grid: {
         disable: true,
       },
+      disabled: true,
     },
     multiselect,
   },
